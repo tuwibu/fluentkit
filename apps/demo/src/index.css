@@ -1,0 +1,58 @@
+/* =============================================================================
+   Demo dev stylesheet.
+
+   The lib ships a PRECOMPILED `@fluent-kit/ui/styles.css` for zero-config
+   consumers — but that file only contains the utility classes the LIBRARY
+   itself uses. The demo screens use additional layout utilities, so here we
+   run a full Tailwind pass that scans BOTH the demo source and the lib source,
+   reusing the lib's single source of truth for tokens + @theme (DRY).
+   ============================================================================= */
+
+/* Pulls in: @import 'tailwindcss', bundled fonts, tw-animate-css, design
+   tokens, the dark @custom-variant and the @theme token→utility mapping. */
+@import '../../../packages/ui/src/styles/index.css';
+
+/* Generate every utility class used by the demo AND by the lib components
+   (the lib's compiled JS in node_modules is not auto-scanned). */
+@source './';
+@source '../../../packages/ui/src';
+
+/* Page chrome — Win11 mica. `--background` is a gradient, so it must be set via
+   `background` (not the `bg-background` utility, which emits background-color). */
+@layer base {
+  html,
+  body {
+    min-height: 100vh;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  #root {
+    min-height: 100vh;
+  }
+}
+
+/* ── Demo-specific density override ─────────────────────────────────────────
+   DataTable cell padding (py-2 = 8px) is correct for general use.
+   Profiles screen uses compact rows to match the multiprofile-v2 reference.
+   We scope this to [data-slot="data-table"] inside .profiles-density so it
+   only affects the profiles screen without touching packages/ui. */
+@layer utilities {
+  /* Uniform body row height (matches multiprofile-v2 fixed rowHeight) so rows
+     with stacked tags align with single-line rows. */
+  .profiles-density [data-slot='data-table'] tbody tr {
+    height: 48px;
+  }
+  .profiles-density [data-slot='data-table'] td {
+    padding-top: 0.375rem;   /* 6px — content vertically centered within 48px row */
+    padding-bottom: 0.375rem;
+  }
+  .profiles-density [data-slot='data-table'] th {
+    padding-top: 0.5rem;     /* 8px */
+    padding-bottom: 0.5rem;
+  }
+}

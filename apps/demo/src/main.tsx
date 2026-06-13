@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fluent-kit/ui/styles.css'
+import { ThemeProvider, ColorThemeProvider } from '@fluent-kit/ui'
+import './index.css'
 import App from './App'
 
 async function bootstrap() {
@@ -14,7 +15,11 @@ async function bootstrap() {
 
   createRoot(rootEl).render(
     <StrictMode>
-      <App />
+      <ThemeProvider>
+        <ColorThemeProvider>
+          <App />
+        </ColorThemeProvider>
+      </ThemeProvider>
     </StrictMode>,
   )
 }
