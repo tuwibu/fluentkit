@@ -1,0 +1,140 @@
+/* =============================================================================
+   Design tokens — Fluent / Windows 11 light + dark theme
+   Single source of truth. Ported from multiprofile-v2 globals.css.
+   DO NOT duplicate these values elsewhere — import this file instead.
+   ============================================================================= */
+
+:root {
+  /* ── Base semantic tokens ─────────────────────────────────────────────── */
+  /* Windows 11 Light Theme - Mica effect with gradient */
+  --background: linear-gradient(180deg, #f6f6f6 0%, #ececec 100%);
+  --background-solid: #f3f3f3;
+  --foreground: #1a1a1a;
+  --card: rgba(255, 255, 255, 0.7);
+  --card-foreground: #1a1a1a;
+  --popover: rgba(255, 255, 255, 0.85);
+  --popover-foreground: #1a1a1a;
+  --primary: #0078d4;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(249, 249, 249, 0.5);
+  --secondary-foreground: #1a1a1a;
+  --muted: rgba(0, 0, 0, 0.03);
+  --muted-foreground: #5d5d5d;
+  --accent: #0078d4;
+  --accent-foreground: #ffffff;
+  --destructive: #c42b1c;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.06);
+  --input: rgba(255, 255, 255, 0.7);
+  --ring: #0078d4;
+
+  /* ── Chart tokens ─────────────────────────────────────────────────────── */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* ── Shape ────────────────────────────────────────────────────────────── */
+  --radius: 0.5rem;
+
+  /* ── Sidebar tokens ───────────────────────────────────────────────────── */
+  --sidebar: transparent;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #0078d4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(0, 0, 0, 0.04);
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: rgba(0, 0, 0, 0.06);
+  --sidebar-ring: #0078d4;
+
+  /* ── Win11 Fluent Design tokens ───────────────────────────────────────── */
+  --win11-mica: linear-gradient(180deg, rgba(243, 243, 243, 0.9) 0%, rgba(238, 238, 238, 0.85) 100%);
+  --win11-wallpaper: linear-gradient(180deg, #f6f6f6 0%, #ececec 100%);
+  --win11-card-border: rgba(0, 0, 0, 0.06);
+  --win11-card-border-bottom: rgba(0, 0, 0, 0.1);
+  --win11-card-bg: rgba(255, 255, 255, 0.7);
+  --win11-card-bg-solid: #ffffff;
+  --win11-hover: rgba(0, 0, 0, 0.04);
+  --win11-active: rgba(0, 0, 0, 0.03);
+  --win11-subtle: rgba(0, 0, 0, 0.03);
+  --win11-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --win11-shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  /* ── Win11 control fill tokens ────────────────────────────────────────── */
+  --win11-control-bg: #fbfbfb;
+  --win11-control-border: #e5e5e5;
+  --win11-control-hover: #f0f0f0;
+
+  /* ── Win11 pinned column tokens ───────────────────────────────────────── */
+  --win11-pinned: var(--win11-card-bg-solid);
+  --win11-pinned-cell: var(--win11-card-bg-solid);
+  --win11-pinned-hover: var(--win11-control-hover);
+  --win11-pinned-selected: color-mix(in srgb, var(--win11-card-bg-solid) 88%, var(--primary));
+}
+
+.dark {
+  /* ── Base semantic tokens ─────────────────────────────────────────────── */
+  /* Windows 11 Dark Theme - Mica effect with gradient */
+  --background: linear-gradient(180deg, #272727 0%, #1f1f1f 100%);
+  --background-solid: #202020;
+  --foreground: #ffffff;
+  --card: rgba(45, 45, 45, 0.7);
+  --card-foreground: #ffffff;
+  --popover: rgba(45, 45, 45, 0.9);
+  --popover-foreground: #ffffff;
+  --primary: #60cdff;
+  --primary-foreground: #003d5c;
+  --secondary: rgba(45, 45, 45, 0.5);
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #9d9d9d;
+  --accent: #60cdff;
+  --accent-foreground: #003d5c;
+  --destructive: #ff99a4;
+  --destructive-foreground: #1a1a1a;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.06);
+  --ring: #60cdff;
+
+  /* ── Chart tokens ─────────────────────────────────────────────────────── */
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  /* ── Sidebar tokens ───────────────────────────────────────────────────── */
+  --sidebar: transparent;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #60cdff;
+  --sidebar-primary-foreground: #003d5c;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #60cdff;
+
+  /* ── Win11 Dark Fluent Design tokens ──────────────────────────────────── */
+  --win11-mica: linear-gradient(180deg, rgba(39, 39, 39, 0.96) 0%, rgba(30, 30, 30, 0.92) 100%);
+  --win11-wallpaper: linear-gradient(180deg, #272727 0%, #1f1f1f 100%);
+  --win11-card-border: rgba(255, 255, 255, 0.08);
+  --win11-card-border-bottom: rgba(255, 255, 255, 0.12);
+  --win11-card-bg: rgba(45, 45, 45, 0.65);
+  --win11-card-bg-solid: #2d2d2d;
+  --win11-hover: rgba(255, 255, 255, 0.06);
+  --win11-active: rgba(255, 255, 255, 0.04);
+  --win11-subtle: rgba(255, 255, 255, 0.04);
+  --win11-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --win11-shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  /* ── Win11 control fill tokens ────────────────────────────────────────── */
+  --win11-control-bg: #323232;
+  --win11-control-border: #454545;
+  --win11-control-hover: #3d3d3d;
+
+  /* ── Win11 pinned column tokens ───────────────────────────────────────── */
+  --win11-pinned: var(--win11-card-bg-solid);
+  --win11-pinned-cell: var(--win11-card-bg-solid);
+  --win11-pinned-hover: var(--win11-control-hover);
+  --win11-pinned-selected: color-mix(in srgb, var(--win11-card-bg-solid) 88%, var(--primary));
+}
