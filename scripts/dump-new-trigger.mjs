@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b = await chromium.connectOverCDP('http://localhost:9222');
+const ctx = b.contexts()[0]; const page = await ctx.newPage();
+await page.setViewportSize({width:1440,height:900});
+await page.goto('http://localhost:5173/profiles',{waitUntil:'domcontentloaded'}); await page.waitForTimeout(2000);
+const trig = page.locator('[data-slot="select-trigger"]').first();
+await trig.click(); await page.waitForTimeout(400);
+await page.locator('[data-slot="select-item"]').nth(1).click(); await page.waitForTimeout(400);
+await page.mouse.move(900,760); await page.waitForTimeout(400);
+const info = await page.evaluate(()=>{const t=document.querySelector('[data-slot="select-trigger"]');const cs=getComputedStyle(t);return{focused:document.activeElement===t,matchesFocusVisible:t.matches(':focus-visible'),borderColor:cs.borderColor,borderWidth:cs.borderWidth,boxShadow:cs.boxShadow,backgroundColor:cs.backgroundColor,outline:cs.outlineStyle+' '+cs.outlineWidth+' '+cs.outlineColor};});
+console.log(JSON.stringify(info,null,2));
+await page.close(); process.exit(0);

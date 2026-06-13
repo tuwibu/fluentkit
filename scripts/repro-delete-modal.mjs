@@ -1,0 +1,11 @@
+import { chromium } from 'playwright';
+const b = await chromium.connectOverCDP('http://localhost:9222');
+const page = await b.contexts()[0].newPage();
+await page.setViewportSize({width:1440,height:900});
+await page.goto('http://localhost:5173/profiles',{waitUntil:'domcontentloaded'}); await page.waitForTimeout(2200);
+const del = page.locator('button[aria-label^="Delete "]').first();
+console.log('delete btns:', await page.locator('button[aria-label^="Delete "]').count());
+await del.click(); await page.waitForTimeout(700);
+await page.screenshot({path:'plans/260613-1943-ui-parity-css-fixes/reports/profiles-delete-modal.png'});
+console.log('shot');
+await page.close(); process.exit(0);
