@@ -34,7 +34,7 @@ export function DayGrid({ month, rangeStart, rangeEnd, hoverDate, onPick, onHove
     else return
 
     e.preventDefault()
-    if (next >= 0 && next < cells.length) cells[next].focus()
+    if (next >= 0 && next < cells.length) cells[next]?.focus()
   }
 
   return (

@@ -250,7 +250,7 @@ describe('DataTable — expandable', () => {
     )
     // expand first row
     const expandBtns = screen.getAllByRole('button', { name: /expand/i })
-    await user.click(expandBtns[0])
+    await user.click(expandBtns[0]!)
     expect(screen.getByTestId('expanded')).toHaveTextContent('Detail: Alice')
   })
 
@@ -290,7 +290,7 @@ describe('DataTable — rowSelection', () => {
     const checkboxes = screen.getAllByRole('checkbox')
     // first checkbox may be select-all, row checkboxes follow
     const rowCheckbox = checkboxes.find((cb) => cb.getAttribute('aria-label') === 'Select row r1') ??
-      checkboxes[1]
+      checkboxes[1]!
     await user.click(rowCheckbox)
     expect(onChange).toHaveBeenCalledWith(['r1'], [rows[0]])
   })

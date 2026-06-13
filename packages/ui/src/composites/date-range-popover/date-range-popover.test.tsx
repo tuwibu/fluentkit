@@ -76,7 +76,8 @@ describe('DateRangePopover', () => {
       await user.click(screen.getByText('Today'))
     })
     expect(onChange).toHaveBeenCalledTimes(1)
-    const [arg] = onChange.mock.calls[0]
+    const firstCall = onChange.mock.calls[0] ?? []
+    const [arg] = firstCall
     expect(arg).toMatchObject({ from: expect.any(String), to: expect.any(String) })
     expect(arg.from).toBe(arg.to) // Today's preset: from === to
   })

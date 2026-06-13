@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { flushSync } from 'react-dom'
 import { Dialog } from 'radix-ui'
+import { Button } from '../../primitives/button'
 import type { ModalProps, ModalImperativeApi, ConfirmOptions } from './modal.types'
 
 /**
@@ -39,7 +40,10 @@ export function Modal({
   return (
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay data-slot="modal-overlay" />
+        <Dialog.Overlay
+          data-slot="modal-overlay"
+          className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50"
+        />
         <Dialog.Content
           data-slot="modal"
           aria-describedby={undefined}
@@ -47,11 +51,12 @@ export function Modal({
           forceMount={destroyOnClose ? undefined : true}
           onEscapeKeyDown={handleEscapeKeyDown}
           onPointerDownOutside={handlePointerDownOutside}
+          className="bg-[var(--win11-card-bg-solid)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg"
         >
-          <div data-slot="modal-header">
+          <div data-slot="modal-header" className="flex flex-col gap-2 text-center sm:text-left">
             {title ? (
               <Dialog.Title data-slot="modal-title" asChild>
-                <span>{title}</span>
+                <span className="text-lg leading-none font-semibold">{title}</span>
               </Dialog.Title>
             ) : (
               /* Visually hidden title satisfies radix a11y requirement when no title prop */
@@ -63,6 +68,7 @@ export function Modal({
                   type="button"
                   aria-label="Close"
                   data-slot="modal-close"
+                  className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
                 >
                   ×
                 </button>
@@ -70,25 +76,25 @@ export function Modal({
             )}
           </div>
 
-          <div data-slot="modal-body">{children}</div>
+          <div data-slot="modal-body" className="text-muted-foreground text-body">{children}</div>
 
           {footer !== null && (
-            <div data-slot="modal-footer">
+            <div data-slot="modal-footer" className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               {footer !== undefined ? (
                 footer
               ) : (
                 <>
-                  <button type="button" onClick={onCancel} data-slot="modal-cancel">
+                  <Button variant="outline" type="button" onClick={onCancel} data-slot="modal-cancel">
                     {cancelText}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={onOk}
                     disabled={confirmLoading}
                     data-slot="modal-ok"
                   >
                     {confirmLoading ? '…' : okText}
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -136,31 +142,36 @@ function ConfirmDialog({
   return (
     <Dialog.Root open={true} onOpenChange={(isOpen) => { if (!isOpen) onReject() }}>
       <Dialog.Portal>
-        <Dialog.Overlay data-slot="modal-overlay" />
+        <Dialog.Overlay
+          data-slot="modal-overlay"
+          className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50"
+        />
         <Dialog.Content
           data-slot="modal"
           aria-describedby={undefined}
           onEscapeKeyDown={() => onReject()}
+          className="bg-[var(--win11-card-bg-solid)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg"
         >
-          <div data-slot="modal-header">
+          <div data-slot="modal-header" className="flex flex-col gap-2 text-center sm:text-left">
             <Dialog.Title data-slot="modal-title" asChild>
-              <span>{title}</span>
+              <span className="text-lg leading-none font-semibold">{title}</span>
             </Dialog.Title>
           </div>
-          {content && <div data-slot="modal-body">{content}</div>}
-          <div data-slot="modal-footer">
-            <button type="button" onClick={onReject} data-slot="modal-cancel">
+          {content && <div data-slot="modal-body" className="text-muted-foreground text-body">{content}</div>}
+          <div data-slot="modal-footer" className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button variant="outline" type="button" onClick={onReject} data-slot="modal-cancel">
               {cancelText}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant={okType === 'danger' ? 'destructive' : 'default'}
               onClick={handleOk}
               disabled={loading}
               data-slot="modal-ok"
               data-variant={okType === 'danger' ? 'danger' : undefined}
             >
               {loading ? '…' : okText}
-            </button>
+            </Button>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

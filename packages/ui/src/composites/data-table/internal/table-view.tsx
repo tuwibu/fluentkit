@@ -71,12 +71,15 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
   const hasVirtualItems = virtualItems !== null && virtualItems.length > 0
   const totalVirtualSize = hasVirtualItems ? virtualizer.getTotalSize() : 0
   const paddingTop = hasVirtualItems ? (virtualItems[0] as { start: number }).start : 0
-  const paddingBottom = hasVirtualItems
-    ? totalVirtualSize - ((virtualItems.at(-1) as { end: number }).end)
+  const lastVirtualItem = hasVirtualItems ? virtualItems[virtualItems.length - 1] : undefined
+  const paddingBottom = hasVirtualItems && lastVirtualItem
+    ? totalVirtualSize - (lastVirtualItem as { end: number }).end
     : 0
 
   const rowsToRender: Row<T>[] =
-    hasVirtualItems ? virtualItems.map((vi) => rows[vi.index]) : rows
+    hasVirtualItems
+      ? (virtualItems.map((vi) => rows[vi.index]).filter(Boolean) as Row<T>[])
+      : rows
 
   return (
     <div data-slot="data-table" className="flex flex-col w-full overflow-hidden">

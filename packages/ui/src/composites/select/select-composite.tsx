@@ -1,10 +1,16 @@
-import { Select as SelectPrimitive } from 'radix-ui'
 import type { SelectProps } from './select.types'
 import { MultiSearchSelect } from './internal/multi-search-select'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '../../primitives/select'
 
 /**
  * Select composite component — config-driven, antd-style facade.
- * - Single mode (no showSearch): radix Select compound for accessible dropdown.
+ * - Single mode (no showSearch): styled primitives from primitives/select.
  * - Multiple or showSearch: Popover-based with Checkbox items + search input.
  * Supports single/multiple selection, search filtering, and allowClear.
  */
@@ -38,7 +44,7 @@ export function SelectComposite<V = string>({
     )
   }
 
-  // Single mode without search: radix Select compound
+  // Single mode without search: styled Select primitives
   const singleValue = value !== undefined ? String(value) : undefined
   const hasValue = singleValue !== undefined && singleValue !== ''
 
@@ -51,49 +57,41 @@ export function SelectComposite<V = string>({
   }
 
   return (
-    <div data-slot="select-composite" data-loading={loading || undefined}>
-      <SelectPrimitive.Root
+    <div data-slot="select-composite" data-loading={loading || undefined} className="relative inline-flex items-center gap-1">
+      <Select
         value={singleValue ?? ''}
         onValueChange={handleValueChange}
         disabled={disabled || loading}
       >
-        <SelectPrimitive.Trigger
-          data-slot="select-trigger"
-          aria-busy={loading}
+        <SelectTrigger aria-busy={loading}>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        {/* Don't return focus to the trigger on close — radix's programmatic
+            refocus makes the browser match :focus-visible, leaving the primary
+            border stuck after a pointer selection. Keyboard users still get the
+            focus border when they Tab to the trigger. */}
+        <SelectContent
+          position="popper"
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <SelectPrimitive.Value
-            data-slot="select-value"
-            placeholder={placeholder}
-          />
-        </SelectPrimitive.Trigger>
-        <SelectPrimitive.Portal>
-          <SelectPrimitive.Content
-            data-slot="select-content"
-            position="popper"
-          >
-            <SelectPrimitive.Viewport data-slot="select-viewport">
-              {options.map((opt, i) => (
-                <SelectPrimitive.Item
-                  key={i}
-                  value={String(opt.value)}
-                  disabled={opt.disabled}
-                  data-slot="select-item"
-                >
-                  <SelectPrimitive.ItemText>
-                    {typeof opt.label === 'string' ? opt.label : String(opt.value)}
-                  </SelectPrimitive.ItemText>
-                </SelectPrimitive.Item>
-              ))}
-            </SelectPrimitive.Viewport>
-          </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-      </SelectPrimitive.Root>
+          {options.map((opt) => (
+            <SelectItem
+              key={String(opt.value)}
+              value={String(opt.value)}
+              disabled={opt.disabled}
+            >
+              {typeof opt.label === 'string' ? opt.label : String(opt.value)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {allowClear && hasValue && (
         <button
           type="button"
           data-slot="select-clear"
           aria-label="Clear selection"
           onClick={handleClear}
+          className="flex size-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors"
         >
           ×
         </button>

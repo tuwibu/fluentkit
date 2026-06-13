@@ -102,7 +102,7 @@ describe('FormFieldController — RHF adapter', () => {
     expect(describedBy).toBeTruthy()
 
     // The element referenced by aria-describedby must contain the error text
-    const errorEl = document.getElementById(describedBy!.split(' ')[0])
+    const errorEl = document.getElementById(describedBy!.split(' ')[0] ?? '')
     expect(errorEl?.textContent).toContain('Invalid email')
   })
 

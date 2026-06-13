@@ -5,8 +5,8 @@
  */
 import * as React from 'react'
 import { Popover as PopoverPrimitive } from 'radix-ui'
-import { Checkbox as CheckboxPrimitive } from 'radix-ui'
-import { CheckIcon } from 'lucide-react'
+import { ChevronDownIcon } from 'lucide-react'
+import { Checkbox } from '../../../primitives/checkbox'
 import type { SelectOption } from '../select.types'
 
 interface MultiSearchSelectProps<V> {
@@ -75,14 +75,21 @@ export function MultiSearchSelect<V = string>({
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!onChange) return
-    onChange(isMultiple ? ([] as unknown as V[]) : (undefined as unknown as V))
+    onChange(isMultiple ? ([] as V[]) : (undefined as unknown as V))
   }
 
   const isChecked = (optValue: V) => selectedValues.includes(optValue)
 
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={disabled || loading ? undefined : setOpen}>
-      <div data-slot="select-composite" data-loading={loading || undefined}>
+    <PopoverPrimitive.Root
+      open={open}
+      onOpenChange={(val) => {
+        if (disabled || loading) return
+        if (!val) setSearchQuery('')
+        setOpen(val)
+      }}
+    >
+      <div data-slot="select-composite" data-loading={loading || undefined} className="relative inline-flex items-center gap-1">
         <PopoverPrimitive.Trigger asChild>
           <button
             type="button"
@@ -91,9 +98,12 @@ export function MultiSearchSelect<V = string>({
             aria-busy={loading}
             aria-haspopup="listbox"
             aria-expanded={open}
+            className="flex h-8 w-fit items-center justify-between gap-2 rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-3 py-2 text-body text-foreground whitespace-nowrap transition-all duration-100 outline-none hover:bg-[var(--win11-control-hover)] focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:text-white"
           >
-            <span data-slot="select-value">{getTriggerLabel()}</span>
-            {allowClear && hasValue && (
+            <span data-slot="select-value" className="line-clamp-1 flex items-center gap-2 data-[placeholder]:text-muted-foreground">
+              {getTriggerLabel()}
+            </span>
+            {allowClear && hasValue ? (
               <span
                 data-slot="select-clear"
                 role="button"
@@ -101,9 +111,12 @@ export function MultiSearchSelect<V = string>({
                 onClick={handleClear}
                 onKeyDown={(e) => e.key === 'Enter' && handleClear(e as unknown as React.MouseEvent)}
                 tabIndex={0}
+                className="flex size-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors"
               >
                 ×
               </span>
+            ) : (
+              <ChevronDownIcon className="size-4 shrink-0 opacity-60" />
             )}
           </button>
         </PopoverPrimitive.Trigger>
@@ -113,22 +126,27 @@ export function MultiSearchSelect<V = string>({
             data-slot="select-content"
             align="start"
             sideOffset={4}
+            onCloseAutoFocus={(e) => e.preventDefault()}
+            className="relative z-50 min-w-[8rem] overflow-hidden rounded-lg border border-[var(--win11-card-border)] bg-[var(--win11-card-bg-solid)] p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.14)] text-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 dark:shadow-[0_8px_32px_rgba(0,0,0,0.36)]"
           >
             {showSearch && (
-              <input
-                type="text"
-                data-slot="select-search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                aria-label="Search options"
-                autoFocus
-              />
+              <div className="px-1 pb-1.5">
+                <input
+                  type="text"
+                  data-slot="select-search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  aria-label="Search options"
+                  autoFocus
+                  className="h-7 w-full rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-2 text-body text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+                />
+              </div>
             )}
             <div role="listbox" aria-multiselectable={isMultiple}>
-              {filteredOptions.map((opt, i) => (
+              {filteredOptions.map((opt) => (
                 <div
-                  key={i}
+                  key={String(opt.value)}
                   data-slot="select-item"
                   role="option"
                   aria-selected={isChecked(opt.value)}
@@ -138,19 +156,15 @@ export function MultiSearchSelect<V = string>({
                     if (e.key === 'Enter' || e.key === ' ') handleToggle(opt.value, opt.disabled)
                   }}
                   tabIndex={opt.disabled ? -1 : 0}
+                  className="relative flex w-full cursor-default items-center gap-2 rounded-[4px] px-3 py-2 text-body text-foreground outline-none select-none transition-colors duration-75 hover:bg-[var(--win11-control-hover)] focus:bg-[var(--win11-control-hover)] aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-selected:font-medium"
                 >
                   {isMultiple && (
-                    <CheckboxPrimitive.Root
-                      data-slot="checkbox"
+                    <Checkbox
                       checked={isChecked(opt.value)}
                       disabled={opt.disabled}
                       aria-hidden="true"
                       tabIndex={-1}
-                    >
-                      <CheckboxPrimitive.Indicator>
-                        <CheckIcon className="size-3.5" />
-                      </CheckboxPrimitive.Indicator>
-                    </CheckboxPrimitive.Root>
+                    />
                   )}
                   <span>{getOptLabel(opt)}</span>
                 </div>

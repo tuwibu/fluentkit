@@ -55,13 +55,13 @@ export function FormField({
 
   return (
     <FormFieldContext.Provider value={{ controlId, invalid, errorId, descriptionId, required }}>
-      <div data-slot="form-field">
+      <div data-slot="form-field" className="flex flex-col gap-2">
         {label && (
           <Label htmlFor={controlId} data-slot="form-field-label">
             {label}
             {required && (
-              <span aria-hidden="true" data-slot="form-field-required">
-                {' '}*
+              <span aria-hidden="true" data-slot="form-field-required" className="text-destructive ml-0.5">
+                *
               </span>
             )}
           </Label>
@@ -72,14 +72,14 @@ export function FormField({
         </div>
 
         {hasError && (
-          <p id={errorId} role="alert" data-slot="form-field-error" aria-live="assertive">
+          <p id={errorId} role="alert" data-slot="form-field-error" aria-live="assertive" className="text-xs text-destructive font-medium">
             {error}
           </p>
         )}
 
         {/* Description hidden when error is present — error takes priority (phase 4 contract). */}
         {hasDescription && !hasError && (
-          <p id={descriptionId} data-slot="form-field-description">
+          <p id={descriptionId} data-slot="form-field-description" className="text-xs text-muted-foreground">
             {description}
           </p>
         )}

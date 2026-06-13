@@ -14,11 +14,11 @@ function isPaginationConfig(p: DataTableProps<unknown>['pagination']): p is Pagi
 export function DataTable<T extends object>(props: DataTableProps<T>) {
   const { table, currentPageRows } = useTableEngine(props)
   const pag = isPaginationConfig(props.pagination) ? props.pagination : null
+  const bordered = props.bordered !== false
 
-  return (
-    <div className="flex flex-col w-full">
+  const inner = (
+    <>
       <TableView table={table} props={props} currentPageRows={currentPageRows} />
-
       {pag && (
         <PaginationBar
           current={pag.current}
@@ -27,6 +27,22 @@ export function DataTable<T extends object>(props: DataTableProps<T>) {
           onChange={pag.onChange}
         />
       )}
+    </>
+  )
+
+  if (bordered) {
+    return (
+      <div className="flex flex-col w-full">
+        <div className="flex flex-col overflow-hidden rounded-lg backdrop-blur-xl bg-[var(--win11-card-bg)] border border-[var(--win11-card-border)]">
+          {inner}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col w-full">
+      {inner}
     </div>
   )
 }

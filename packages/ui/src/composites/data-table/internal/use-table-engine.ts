@@ -70,7 +70,7 @@ export function useTableEngine<T extends object>(
   // ── pagination state ─────────────────────────────────────────────────────
   // When pagination=false/undefined: show all rows (no paginator, no manual pages).
   // When pagination config object: server-driven (manualPagination=true).
-  const isServerPagination = !!(pagination && pagination !== false)
+  const isServerPagination = pagination !== undefined && pagination !== false
 
   const [localPagination, setLocalPagination] = useState<PaginationState>({
     pageIndex: 0,

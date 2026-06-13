@@ -29,7 +29,7 @@ describe('InputComposite — allowClear', () => {
     await userEvent.click(document.querySelector('[data-slot="input-clear"]') as HTMLElement)
     expect(onChange).toHaveBeenCalledTimes(1)
     // The synthetic event value should be ''
-    const callArg = onChange.mock.calls[0][0]
+    const callArg = onChange.mock.calls[0]?.[0]
     expect(callArg.target.value).toBe('')
   })
 })

@@ -123,4 +123,10 @@ export interface DataTableProps<T> {
   onRow?: (record: T) => { onClick?: (e: MouseEvent) => void }
   /** Content to display when `dataSource` is empty. */
   emptyText?: ReactNode
+  /**
+   * Render card wrapper around the table.
+   * Default: `true`. Pass `false` to render a flat table without card border
+   * so it can be embedded inside an outer card container.
+   */
+  bordered?: boolean
 }
