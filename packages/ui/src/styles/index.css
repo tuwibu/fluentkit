@@ -90,3 +90,277 @@
   --color-bg-pinned-hover: var(--win11-pinned-hover);
   --color-bg-pinned-selected: var(--win11-pinned-selected);
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  /* Disable text selection on UI chrome — opt back in per element.
+     Native desktop feel: chrome text isn't selectable; only form fields +
+     explicitly copyable content are. Anchored on body so Radix portals
+     (Sheet/Dialog/Dropdown/Tooltip/Sonner mount under document.body, outside
+     #root) inherit the rule too. */
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  input,
+  textarea,
+  [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  body {
+    @apply bg-background text-foreground text-body;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Interactive cursor */
+  button,
+  a[href],
+  label[for],
+  select,
+  summary,
+  [role="button"],
+  [role="menuitem"],
+  [role="menuitemcheckbox"],
+  [role="menuitemradio"],
+  [role="option"],
+  [role="tab"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [role="combobox"],
+  [role="link"],
+  [data-slot="select-trigger"],
+  [data-slot="checkbox"],
+  [data-slot="switch"],
+  [data-slot="radio-group-item"],
+  [data-slot="dropdown-menu-trigger"],
+  [data-slot="trigger"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [disabled],
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
+}
+
+/* Radix popper (Select/Dropdown/Popover/Tooltip) must sit above custom portals
+   like the user menu (z-index: 600). Radix sets inline z-index:50 on the wrapper,
+   so !important is required to override it. */
+[data-radix-popper-content-wrapper] {
+  z-index: 700 !important;
+}
+
+/* Windows 11 Fluent Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.45);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Windows 11 Page Transition Animation */
+@keyframes win11-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-win11-slide-up {
+  animation: win11-slide-up 200ms cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+/* ── View Transitions (page nav) ───────────────────────────────────────────
+   Driven by use-nav-direction: it sets html[data-nav-direction] and wraps
+   navigation in startViewTransition(). The content wrapper carries
+   view-transition-name: win11-page, so ONLY that box animates — sidebar,
+   titlebar and footer stay in root and are held static (animation: none).
+   Fluent Motion: enter = decelerate (260ms), exit = accelerate + shorter
+   (~70%, 180ms). transform/opacity only → compositor-only, no reflow. */
+
+/* Hold the app chrome perfectly still. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes vt-slide-up-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes vt-page-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes vt-page-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+/* Vertical (default): new page flies up + fades, old page just fades out. */
+html[data-nav-direction='vertical']::view-transition-new(win11-page) {
+  animation: vt-slide-up-in 260ms cubic-bezier(0.1, 0.9, 0.2, 1) both;
+}
+html[data-nav-direction='vertical']::view-transition-old(win11-page) {
+  animation: vt-fade-out 180ms cubic-bezier(0.8, 0, 0.7, 1) both;
+}
+
+/* Forward (group → filtered list via folder icon): old page holds still, new
+   page rides in from the right ON TOP — sheet inserted onto the stack. */
+html[data-nav-direction='forward']::view-transition-old(win11-page) {
+  animation: none;
+}
+html[data-nav-direction='forward']::view-transition-new(win11-page) {
+  z-index: 2;
+  background: var(--win11-mica), var(--win11-wallpaper);
+  animation: vt-page-in-right 300ms cubic-bezier(0.1, 0.9, 0.2, 1) both;
+}
+
+/* Back (Back-to-Groups button): revealed page holds still, the leaving page
+   rides ON TOP and slides off to the right — sheet pulled out of the stack. */
+html[data-nav-direction='back']::view-transition-new(win11-page) {
+  animation: none;
+}
+html[data-nav-direction='back']::view-transition-old(win11-page) {
+  z-index: 2;
+  background: var(--win11-mica), var(--win11-wallpaper);
+  animation: vt-page-out-right 300ms cubic-bezier(0.8, 0, 0.7, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(win11-page),
+  ::view-transition-new(win11-page),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+  .animate-win11-slide-up {
+    animation: none !important;
+  }
+}
+
+/* Launch / Stop button — Win11 Fluent. Idle = primary accent CTA, Stop = neutral. */
+.launch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  transition: background 120ms ease, transform 60ms ease, box-shadow 120ms ease;
+}
+
+.launch-btn.icon-only {
+  width: 32px;
+  padding: 0;
+}
+
+.launch-btn:hover {
+  background: color-mix(in srgb, var(--primary) 88%, #000);
+}
+
+.launch-btn:active {
+  transform: scale(0.95);
+}
+
+.launch-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+}
+
+.launch-btn.running {
+  background: var(--win11-control-bg);
+  color: var(--foreground);
+  border-color: var(--win11-control-border);
+}
+
+.launch-btn.running:hover {
+  background: var(--win11-control-hover);
+}
+
+.launch-btn .ico {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
