@@ -1,3 +1,14 @@
+// Theme
+export { ThemeProvider, useTheme } from './theme/theme-provider'
+export { ColorThemeProvider, useColorTheme } from './theme/color-theme-provider'
+export type { LightTheme, DarkTheme } from './theme/color-theme-provider'
+export {
+  lightThemeOptions,
+  darkThemeOptions,
+  lightThemeConfigs,
+  darkThemeConfigs,
+} from './theme/presets'
+
 // Placeholder (existing — do not remove)
 export { Placeholder } from './placeholder'
 export type { PlaceholderProps } from './placeholder'
@@ -103,11 +114,14 @@ export { FormField } from './composites/form-field/form-field'
 export { useFormField } from './composites/form-field/form-field-context'
 
 export type {
-  SidebarNavItem,
-  SidebarNavGroup,
-  SidebarNavProps,
-} from './composites/sidebar-nav/sidebar-nav.types'
-export { SidebarNav } from './composites/sidebar-nav/sidebar-nav'
+  MenuLeaf,
+  MenuGroup,
+  MenuItem,
+  SidebarBrand,
+  SidebarProps,
+} from './composites/sidebar/sidebar.types'
+export { isGroup } from './composites/sidebar/sidebar.types'
+export { Sidebar } from './composites/sidebar/sidebar'
 
 export type {
   SegmentedControlOption,
@@ -118,8 +132,28 @@ export { SegmentedControl } from './composites/segmented-control/segmented-contr
 export type { DetailDrawerProps } from './composites/detail-drawer/detail-drawer.types'
 export { DetailDrawer } from './composites/detail-drawer/detail-drawer'
 
+export type { HeaderProps } from './composites/header/header.types'
+export { Header } from './composites/header/header'
+
 export type {
   DateRangeValue,
   DateRangePopoverProps,
 } from './composites/date-range-popover/date-range-popover.types'
 export { DateRangePopover } from './composites/date-range-popover/date-range-popover'
+
+export type { UserDropdownProps, UserDropdownUser } from './composites/user-dropdown/user-dropdown.types'
+export { UserDropdown } from './composites/user-dropdown/user-dropdown'
+
+export type { AppShellProps } from './composites/app-shell/app-shell.types'
+export { AppShell } from './composites/app-shell/app-shell'
+export { AppShellProvider, useAppShell } from './composites/app-shell/app-shell-context'
+
+export type { BulkAction, BulkBarProps } from './composites/bulk-bar/bulk-bar.types'
+export { BulkBar } from './composites/bulk-bar/bulk-bar'
+
+export type {
+  DrawerSectionProps,
+  DrawerInfoRowProps,
+} from './composites/drawer-section/drawer-section.types'
+export { DrawerSection } from './composites/drawer-section/drawer-section'
+export { DrawerInfoRow } from './composites/drawer-section/drawer-info-row'
