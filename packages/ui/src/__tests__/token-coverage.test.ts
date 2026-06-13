@@ -103,7 +103,7 @@ function extractVarsInBlock(css: string, selectorPattern: RegExp): Set<string> {
         const varRegex = /(--[\w-]+)\s*:/g
         let m: RegExpExecArray | null
         while ((m = varRegex.exec(block)) !== null) {
-          vars.add(m[1])
+          if (m[1]) vars.add(m[1])
         }
         break
       }

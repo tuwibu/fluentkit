@@ -112,8 +112,8 @@ describe('Build artifacts — font files (C1 regression guard)', () => {
     let m: RegExpExecArray | null
 
     while ((m = urlRe.exec(css)) !== null) {
-      const filename = m[1]
-      if (!existsSync(resolve(DIST_FILES, filename))) {
+      const filename = m[1] ?? ''
+      if (filename && !existsSync(resolve(DIST_FILES, filename))) {
         missing.push(filename)
       }
     }
