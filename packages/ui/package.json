@@ -1,6 +1,6 @@
 {
   "name": "@tuwibu/fluentkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React component library with Fluent/Windows-11 design — config-driven antd-shape API, ships compiled CSS (zero Tailwind config required).",
   "keywords": [
     "react",
@@ -60,7 +60,9 @@
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "rhf": ["./dist/rhf/index.d.ts"]
+      "rhf": [
+        "./dist/rhf/index.d.ts"
+      ]
     }
   },
   "scripts": {
