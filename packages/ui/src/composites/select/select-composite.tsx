@@ -1,5 +1,6 @@
 import type { SelectProps } from './select.types'
 import { MultiSearchSelect } from './internal/multi-search-select'
+import { OptionChip } from './internal/option-chip'
 import {
   Select,
   SelectTrigger,
@@ -48,6 +49,12 @@ export function SelectComposite<V = string>({
   const singleValue = value !== undefined ? String(value) : undefined
   const hasValue = singleValue !== undefined && singleValue !== ''
 
+  // Lookup selected option to render icon/chip in trigger
+  const selectedOption = hasValue
+    ? options.find((o) => String(o.value) === singleValue)
+    : undefined
+  const selectedHasMeta = selectedOption && (selectedOption.icon || selectedOption.color)
+
   const handleValueChange = (val: string) => {
     onChange?.(val as unknown as V)
   }
@@ -64,7 +71,20 @@ export function SelectComposite<V = string>({
         disabled={disabled || loading}
       >
         <SelectTrigger aria-busy={loading}>
-          <SelectValue placeholder={placeholder} />
+          {selectedHasMeta ? (
+            <>
+              {/* Radix needs SelectValue to broadcast the trigger's accessible
+                  name; keep it for screen readers, show the chip visually. */}
+              <SelectValue placeholder={placeholder} className="sr-only" />
+              <OptionChip
+                icon={selectedOption.icon}
+                color={selectedOption.color}
+                label={selectedOption.label}
+              />
+            </>
+          ) : (
+            <SelectValue placeholder={placeholder} />
+          )}
         </SelectTrigger>
         {/* Don't return focus to the trigger on close — radix's programmatic
             refocus makes the browser match :focus-visible, leaving the primary
@@ -80,7 +100,7 @@ export function SelectComposite<V = string>({
               value={String(opt.value)}
               disabled={opt.disabled}
             >
-              {typeof opt.label === 'string' ? opt.label : String(opt.value)}
+              <OptionChip icon={opt.icon} color={opt.color} label={opt.label} />
             </SelectItem>
           ))}
         </SelectContent>

@@ -23,6 +23,18 @@ const options: SelectOption[] = [
   { label: 'Cherry', value: 'cherry', disabled: true },
 ]
 
+const ICON_NODE = <span data-testid="icon-globe">globe</span>
+
+const optionsWithIcon: SelectOption[] = [
+  { label: 'Globe', value: 'globe', icon: ICON_NODE },
+  { label: 'Star', value: 'star' },
+]
+
+const optionsWithColor: SelectOption[] = [
+  { label: 'Red', value: 'red', color: '#ef4444' },
+  { label: 'Plain', value: 'plain' },
+]
+
 // ---------------------------------------------------------------------------
 // Single mode (radix Select) — scope: controlled value + clear
 // ---------------------------------------------------------------------------
@@ -147,6 +159,79 @@ describe('SelectComposite — multiple mode', () => {
       />,
     )
     expect(screen.getByText('2 selected')).toBeInTheDocument()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// icon + color in dropdown rows (Popover-based — fully testable)
+// ---------------------------------------------------------------------------
+describe('SelectComposite — icon + color rendering in dropdown rows', () => {
+  it('icon appears inside dropdown row when option has icon', async () => {
+    render(<SelectComposite options={optionsWithIcon} mode="multiple" />)
+    const trigger = document.querySelector('[data-slot="select-trigger"]') as HTMLButtonElement
+    await userEvent.click(trigger)
+    await waitFor(() => {
+      expect(screen.getByTestId('icon-globe')).toBeInTheDocument()
+    })
+  })
+
+  it('plain option (no icon) still renders text in row', async () => {
+    render(<SelectComposite options={optionsWithIcon} mode="multiple" />)
+    const trigger = document.querySelector('[data-slot="select-trigger"]') as HTMLButtonElement
+    await userEvent.click(trigger)
+    await waitFor(() => {
+      expect(screen.getByText('Star')).toBeInTheDocument()
+    })
+  })
+
+  it('colored option renders label text with color-mix style in row', async () => {
+    render(<SelectComposite options={optionsWithColor} mode="multiple" />)
+    const trigger = document.querySelector('[data-slot="select-trigger"]') as HTMLButtonElement
+    await userEvent.click(trigger)
+    await waitFor(() => {
+      // Tag renders a <span> containing the label text
+      const redLabel = screen.getByText('Red')
+      // Tag wraps label — parent span should have inline style from color-mix
+      const tagSpan = redLabel.closest('span[style]')
+      expect(tagSpan).not.toBeNull()
+    })
+  })
+
+  it('plain option (no color) renders text without colored span wrapper', async () => {
+    render(<SelectComposite options={optionsWithColor} mode="multiple" />)
+    const trigger = document.querySelector('[data-slot="select-trigger"]') as HTMLButtonElement
+    await userEvent.click(trigger)
+    await waitFor(() => {
+      const plainLabel = screen.getByText('Plain')
+      // Plain option should NOT be wrapped in a span with inline color style
+      const tagSpan = plainLabel.closest('span[style]')
+      expect(tagSpan).toBeNull()
+    })
+  })
+})
+
+// ---------------------------------------------------------------------------
+// trigger chip for single+search when selected option has icon/color
+// ---------------------------------------------------------------------------
+describe('SelectComposite — trigger chip (showSearch single)', () => {
+  it('shows colored chip (Tag span with style) in trigger after selecting colored option', async () => {
+    render(<SelectComposite options={optionsWithColor} showSearch value="red" onChange={() => {}} />)
+    // Tag renders a span with inline color-mix style
+    const triggerValue = document.querySelector('[data-slot="select-value"]')
+    const tagSpan = triggerValue?.querySelector('span[style]')
+    expect(tagSpan).not.toBeNull()
+  })
+
+  it('shows icon in trigger after selecting option with icon (single+search)', async () => {
+    render(<SelectComposite options={optionsWithIcon} showSearch value="globe" onChange={() => {}} />)
+    const triggerValue = document.querySelector('[data-slot="select-value"]')
+    expect(triggerValue?.querySelector('[data-testid="icon-globe"]')).toBeInTheDocument()
+  })
+
+  it('shows plain text in trigger when selected option has no meta', async () => {
+    render(<SelectComposite options={optionsWithIcon} showSearch value="star" onChange={() => {}} />)
+    const triggerValue = document.querySelector('[data-slot="select-value"]')
+    expect(triggerValue?.textContent).toContain('Star')
   })
 })
 

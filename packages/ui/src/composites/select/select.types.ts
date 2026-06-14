@@ -10,6 +10,10 @@ export interface SelectOption<V = string> {
   value: V
   /** When true, this option is not selectable. */
   disabled?: boolean
+  /** Optional leading icon (ReactNode, consumer-supplied). */
+  icon?: ReactNode
+  /** Optional hex/rgb color for a colored chip (via color-mix). */
+  color?: string
 }
 
 /**

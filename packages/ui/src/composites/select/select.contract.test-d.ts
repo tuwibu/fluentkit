@@ -1,10 +1,21 @@
 import { describe, it, expectTypeOf } from 'vitest'
+import type { ReactNode } from 'react'
 import type { SelectProps, SelectOption } from './select.types'
 
 describe('SelectOption', () => {
   it('accepts string value (default generic)', () => {
     const opt: SelectOption = { label: 'Option A', value: 'a' }
     expectTypeOf(opt.value).toMatchTypeOf<string>()
+  })
+
+  it('accepts optional icon as ReactNode', () => {
+    const opt: SelectOption = { label: 'With icon', value: 'x', icon: null }
+    expectTypeOf(opt.icon).toMatchTypeOf<ReactNode | undefined>()
+  })
+
+  it('accepts optional color as string', () => {
+    const opt: SelectOption = { label: 'Colored', value: 'y', color: '#ff0000' }
+    expectTypeOf(opt.color).toMatchTypeOf<string | undefined>()
   })
 
   it('accepts numeric value via generic', () => {

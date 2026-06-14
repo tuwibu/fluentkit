@@ -8,6 +8,7 @@ import { Popover as PopoverPrimitive } from 'radix-ui'
 import { ChevronDownIcon } from 'lucide-react'
 import { Checkbox } from '../../../primitives/checkbox'
 import type { SelectOption } from '../select.types'
+import { OptionChip } from './option-chip'
 
 interface MultiSearchSelectProps<V> {
   options: SelectOption<V>[]
@@ -23,6 +24,13 @@ interface MultiSearchSelectProps<V> {
 
 function getOptLabel<V>(opt: SelectOption<V>): string {
   return typeof opt.label === 'string' ? opt.label : String(opt.value)
+}
+
+// Compare option values by their string form so selection stays consistent
+// with the single-mode path (select-composite uses `String(value)`), and so
+// non-primitive V (objects) match by content instead of reference identity.
+function sameVal<V>(a: V, b: V): boolean {
+  return String(a) === String(b)
 }
 
 export function MultiSearchSelect<V = string>({
@@ -50,10 +58,18 @@ export function MultiSearchSelect<V = string>({
 
   const hasValue = selectedValues.length > 0
 
+  // For single+search: returns matched option if it has icon/color meta (render chip).
+  // For multiple: falls through to text label ("N selected").
+  const getTriggerOption = (): SelectOption<V> | undefined => {
+    if (isMultiple || selectedValues.length === 0) return undefined
+    const match = options.find((o) => sameVal(o.value, selectedValues[0]))
+    return match && (match.icon || match.color) ? match : undefined
+  }
+
   const getTriggerLabel = () => {
     if (selectedValues.length === 0) return placeholder ?? 'Select...'
     if (isMultiple) return `${selectedValues.length} selected`
-    const match = options.find((o) => o.value === selectedValues[0])
+    const match = options.find((o) => sameVal(o.value, selectedValues[0]))
     if (!match) return placeholder ?? 'Select...'
     return getOptLabel(match)
   }
@@ -62,8 +78,8 @@ export function MultiSearchSelect<V = string>({
     if (optDisabled || !onChange) return
     if (isMultiple) {
       const current = Array.isArray(value) ? (value as V[]) : []
-      const next = current.includes(optValue)
-        ? current.filter((v) => v !== optValue)
+      const next = current.some((v) => sameVal(v, optValue))
+        ? current.filter((v) => !sameVal(v, optValue))
         : [...current, optValue]
       onChange(next)
     } else {
@@ -78,7 +94,7 @@ export function MultiSearchSelect<V = string>({
     onChange(isMultiple ? ([] as V[]) : (undefined as unknown as V))
   }
 
-  const isChecked = (optValue: V) => selectedValues.includes(optValue)
+  const isChecked = (optValue: V) => selectedValues.some((v) => sameVal(v, optValue))
 
   return (
     <PopoverPrimitive.Root
@@ -101,7 +117,12 @@ export function MultiSearchSelect<V = string>({
             className="flex h-8 w-fit items-center justify-between gap-2 rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-3 py-2 text-body text-foreground whitespace-nowrap transition-all duration-100 outline-none hover:bg-[var(--win11-control-hover)] focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:text-white"
           >
             <span data-slot="select-value" className="line-clamp-1 flex items-center gap-2 data-[placeholder]:text-muted-foreground">
-              {getTriggerLabel()}
+              {(() => {
+                const triggerOpt = getTriggerOption()
+                return triggerOpt
+                  ? <OptionChip icon={triggerOpt.icon} color={triggerOpt.color} label={triggerOpt.label} />
+                  : getTriggerLabel()
+              })()}
             </span>
             {allowClear && hasValue ? (
               <span
@@ -166,7 +187,7 @@ export function MultiSearchSelect<V = string>({
                       tabIndex={-1}
                     />
                   )}
-                  <span>{getOptLabel(opt)}</span>
+                  <OptionChip icon={opt.icon} color={opt.color} label={opt.label} />
                 </div>
               ))}
             </div>
