@@ -8,7 +8,7 @@ import {
   type SortingFn,
   type CellContext,
 } from '@tanstack/react-table'
-import type { ColumnDef as FacadeColumnDef } from '../data-table.types'
+import type { ColumnDef as FacadeColumnDef, ResolvedColumnMenuConfig } from '../data-table.types'
 
 /**
  * Converts one facade ColumnDef<T> to the TanStack equivalent.
@@ -20,8 +20,13 @@ import type { ColumnDef as FacadeColumnDef } from '../data-table.types'
  * - `render` → TanStack `cell`; omitted when no render (TanStack uses default string cell).
  * - `sorter: true` → enableSorting=true, no sortingFn (server-side signal or alphanumeric).
  * - `sorter: fn` → enableSorting=true + custom sortingFn.
+ * - `enablePinning` / `enableHiding`: forwarded from facade; default true when menuConfig active.
+ * - `meta.headerTitle`: string version of `title` for use in visibility menu checkboxes.
  */
-export function adaptColumn<T>(col: FacadeColumnDef<T>): TanstackColumnDef<T> {
+export function adaptColumn<T>(
+  col: FacadeColumnDef<T>,
+  menuConfig: ResolvedColumnMenuConfig | null,
+): TanstackColumnDef<T> {
   const hasSorter = col.sorter !== undefined && col.sorter !== false
   const isLocalSorter = typeof col.sorter === 'function'
 
@@ -38,10 +43,20 @@ export function adaptColumn<T>(col: FacadeColumnDef<T>): TanstackColumnDef<T> {
         col.render!(ctx.getValue() as any, ctx.row.original, ctx.row.index)
     : undefined
 
+  // Derive string title for visibility menu — only when title is a string.
+  const headerTitle = typeof col.title === 'string' ? col.title : col.key
+
+  // Column menu feature flags — only applied when the menu is active.
+  // enablePinning / enableHiding default to true unless caller opts out.
+  const enablePinning = menuConfig?.pin ? (col.enablePinning ?? true) : false
+  const enableHiding = menuConfig?.hide ? (col.enableHiding ?? true) : undefined
+
   const base: TanstackColumnDef<T> = {
     id: col.key,
     header: () => col.title,
     enableSorting: hasSorter,
+    enablePinning,
+    ...(enableHiding !== undefined ? { enableHiding } : {}),
     ...(sortingFn ? { sortingFn } : {}),
     ...(cellRenderer ? { cell: cellRenderer } : {}),
     ...(col.width != null && typeof col.width === 'number' ? { size: col.width } : {}),
@@ -49,6 +64,7 @@ export function adaptColumn<T>(col: FacadeColumnDef<T>): TanstackColumnDef<T> {
       align: col.align ?? 'left',
       fixed: col.fixed,
       ellipsis: col.ellipsis,
+      headerTitle,
     },
   }
 
@@ -71,6 +87,9 @@ export function adaptColumn<T>(col: FacadeColumnDef<T>): TanstackColumnDef<T> {
 /**
  * Converts an array of facade ColumnDefs to TanStack ColumnDefs.
  */
-export function adaptColumns<T>(cols: FacadeColumnDef<T>[]): TanstackColumnDef<T>[] {
-  return cols.map(adaptColumn)
+export function adaptColumns<T>(
+  cols: FacadeColumnDef<T>[],
+  menuConfig: ResolvedColumnMenuConfig | null = null,
+): TanstackColumnDef<T>[] {
+  return cols.map((col) => adaptColumn(col, menuConfig))
 }

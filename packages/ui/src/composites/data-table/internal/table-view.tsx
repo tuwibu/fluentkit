@@ -1,17 +1,19 @@
 /**
  * table-view.tsx — PRIVATE
  * Renders <table> from a TanStack Table instance.
- * Handles: virtual rows, sticky header, expandable rows, row selection checkboxes.
- * Ported & decoupled from multiprofile-v2 data-grid-table (no store/services/wails).
+ * Handles: virtual rows, sticky header, expandable rows, row selection checkboxes,
+ *          column header menu (sort/pin/reorder/hide) when columnMenu is enabled.
  */
-import { Fragment, useRef } from 'react'
-import { flexRender, type Table, type Row } from '@tanstack/react-table'
+import { CSSProperties, Fragment, useRef } from 'react'
+import { flexRender, type Table, type Row, type Column } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Checkbox } from '../../../primitives/checkbox'
 import { cn } from '../../../lib/cn'
 import type { DataTableProps } from '../data-table.types'
+import { resolveColumnMenuConfig } from '../data-table.types'
 import { LoadingRows, EmptyRow } from './table-states'
 import { PaginationBar } from './pagination-bar'
+import { ColumnHeaderMenu } from './column-header-menu'
 
 export { PaginationBar }
 
@@ -27,6 +29,21 @@ function getSkeletonCount(loading: DataTableProps<unknown>['loading']): number {
     return loading.skeletonRows ?? DEFAULT_SKELETON_ROWS
   }
   return DEFAULT_SKELETON_ROWS
+}
+
+/**
+ * Returns inline styles for a pinned column cell (<th> or <td>).
+ * When not pinned returns an empty object — no style applied.
+ */
+function getPinningStyles<T>(column: Column<T>): CSSProperties {
+  const isPinned = column.getIsPinned()
+  if (!isPinned) return {}
+  return {
+    left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
+    right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
+    position: 'sticky',
+    zIndex: 2,
+  }
 }
 
 // ── TableView ────────────────────────────────────────────────────────────────
@@ -47,7 +64,12 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
     onRow,
     emptyText,
     rowSelection: rowSelectionConfig,
+    columnMenu,
   } = props
+
+  const menuConfig = resolveColumnMenuConfig(columnMenu)
+  const menuEnabled = menuConfig !== null
+  const pinEnabled = menuEnabled && menuConfig.pin
 
   const isLoading = loading === true || (typeof loading === 'object' && loading !== null)
   const hasScrollY = scroll?.y != null
@@ -115,26 +137,36 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
                   </th>
                 )}
                 {hg.headers.map((header) => {
-                  const canSort = header.column.getCanSort()
-                  const sortDir = header.column.getIsSorted()
+                  const col = header.column
+                  const canSort = col.getCanSort()
+                  const sortDir = col.getIsSorted()
                   const align =
-                    (header.column.columnDef.meta as { align?: string } | undefined)?.align ?? 'left'
+                    (col.columnDef.meta as { align?: string } | undefined)?.align ?? 'left'
+                  const isPinned = col.getIsPinned()
+
+                  // Derive string title for the menu trigger label.
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- meta is typed internally
+                  const headerTitle: string = (col.columnDef.meta as any)?.headerTitle ?? col.id
 
                   return (
                     <th
                       key={header.id}
                       className={cn(
                         'px-3 py-2 font-medium text-muted-foreground whitespace-nowrap select-none',
-                        canSort && 'cursor-pointer hover:text-foreground transition-colors',
+                        !menuEnabled && canSort && 'cursor-pointer hover:text-foreground transition-colors',
                         align === 'center' && 'text-center',
                         align === 'right' && 'text-right',
+                        // Pinned header: opaque background + shadow separator
+                        isPinned && 'bg-background',
+                        isPinned === 'left' && 'shadow-[inset_-1px_0_0_hsl(var(--border))]',
+                        isPinned === 'right' && 'shadow-[inset_1px_0_0_hsl(var(--border))]',
                       )}
-                      style={
-                        header.column.columnDef.size
-                          ? { width: header.column.columnDef.size }
-                          : undefined
-                      }
-                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
+                      style={{
+                        ...(col.columnDef.size ? { width: col.columnDef.size } : {}),
+                        ...(pinEnabled ? getPinningStyles(col) : {}),
+                      }}
+                      // Only attach sort handler when menu is OFF (backward-compat click-to-sort).
+                      onClick={!menuEnabled && canSort ? col.getToggleSortingHandler() : undefined}
                       aria-sort={
                         sortDir === 'asc'
                           ? 'ascending'
@@ -145,16 +177,25 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
                           : undefined
                       }
                     >
-                      <span className="inline-flex items-center gap-1">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
-                        {canSort && (
-                          <span aria-hidden="true" className="text-xs opacity-50">
-                            {sortDir === 'asc' ? '↑' : sortDir === 'desc' ? '↓' : '↕'}
-                          </span>
-                        )}
-                      </span>
+                      {header.isPlaceholder ? null : menuEnabled ? (
+                        // Menu mode: wrap header content in dropdown trigger.
+                        <ColumnHeaderMenu
+                          column={col}
+                          table={table}
+                          config={menuConfig}
+                          title={headerTitle}
+                        />
+                      ) : (
+                        // Legacy mode: plain label + sort indicator.
+                        <span className="inline-flex items-center gap-1">
+                          {flexRender(col.columnDef.header, header.getContext())}
+                          {canSort && (
+                            <span aria-hidden="true" className="text-xs opacity-50">
+                              {sortDir === 'asc' ? '↑' : sortDir === 'desc' ? '↓' : '↕'}
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </th>
                   )
                 })}
@@ -238,9 +279,12 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
                         )}
 
                         {row.getVisibleCells().map((cell) => {
+                          const cellCol = cell.column
                           const align =
-                            (cell.column.columnDef.meta as { align?: string } | undefined)
+                            (cellCol.columnDef.meta as { align?: string } | undefined)
                               ?.align ?? 'left'
+                          const isPinned = cellCol.getIsPinned()
+
                           return (
                             <td
                               key={cell.id}
@@ -248,7 +292,14 @@ export function TableView<T extends object>({ table, props, currentPageRows }: T
                                 'px-3 py-2',
                                 align === 'center' && 'text-center',
                                 align === 'right' && 'text-right',
+                                // Pinned body cell: opaque bg + shadow separator
+                                isPinned && 'bg-background',
+                                isPinned === 'left' &&
+                                  'shadow-[inset_-1px_0_0_hsl(var(--border))]',
+                                isPinned === 'right' &&
+                                  'shadow-[inset_1px_0_0_hsl(var(--border))]',
                               )}
+                              style={pinEnabled ? getPinningStyles(cellCol) : undefined}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>

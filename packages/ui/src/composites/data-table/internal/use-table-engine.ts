@@ -14,9 +14,12 @@ import {
   type RowSelectionState,
   type ExpandedState,
   type PaginationState,
+  type ColumnPinningState,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { useState, useMemo } from 'react'
 import type { DataTableProps } from '../data-table.types'
+import { resolveColumnMenuConfig } from '../data-table.types'
 import { adaptColumns } from './column-adapter'
 
 interface TableEngineResult<T> {
@@ -35,7 +38,11 @@ export function useTableEngine<T extends object>(
     pagination,
     rowSelection: rowSelectionConfig,
     expandable,
+    columnMenu,
   } = props
+
+  const menuConfig = resolveColumnMenuConfig(columnMenu)
+  const menuEnabled = menuConfig !== null
 
   // ── sorting state (local) ────────────────────────────────────────────────
   const [sorting, setSorting] = useState<SortingState>([])
@@ -52,6 +59,38 @@ export function useTableEngine<T extends object>(
   // ── expanded state (local) ───────────────────────────────────────────────
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
+  // ── column pinning (opt-in) ──────────────────────────────────────────────
+  // Initialise from facade `fixed` prop so existing usage is honoured.
+  const initialPinning = useMemo<ColumnPinningState>(() => {
+    if (!menuEnabled) return {}
+    const left: string[] = []
+    const right: string[] = []
+    for (const col of columns) {
+      if (col.fixed === 'left') left.push(col.key)
+      else if (col.fixed === 'right') right.push(col.key)
+    }
+    return { left, right }
+  }, [columns, menuEnabled])
+
+  const [columnPinning, setColumnPinning] = useState<ColumnPinningState>(initialPinning)
+
+  // ── column order (opt-in) ────────────────────────────────────────────────
+  // Seeded once from the facade column keys. Two constraints when `reorder` is
+  // enabled: (1) the `columns` prop must be stable after mount — adding/removing
+  // columns at runtime won't be reflected here, so a new column would be hidden
+  // by TanStack until remount; (2) select/expand are rendered as raw <th>/<td>
+  // outside the TanStack column pipeline, so they are intentionally NOT in the
+  // order. If they are ever migrated to TanStack columns, seed their ids here.
+  const initialOrder = useMemo<string[]>(
+    () => (menuEnabled ? columns.map((c) => c.key) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally only on mount
+    [],
+  )
+  const [columnOrder, setColumnOrder] = useState<string[]>(initialOrder)
+
+  // ── column visibility (opt-in) ───────────────────────────────────────────
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
   // ── getRowId ─────────────────────────────────────────────────────────────
   const getRowId = useMemo(
     () =>
@@ -65,7 +104,11 @@ export function useTableEngine<T extends object>(
   )
 
   // ── adapted columns ──────────────────────────────────────────────────────
-  const tanstackColumns = useMemo(() => adaptColumns<T>(columns), [columns])
+  const tanstackColumns = useMemo(
+    () => adaptColumns<T>(columns, menuConfig),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- menuConfig is derived from columnMenu prop
+    [columns, columnMenu],
+  )
 
   // ── pagination state ─────────────────────────────────────────────────────
   // When pagination=false/undefined: show all rows (no paginator, no manual pages).
@@ -95,6 +138,7 @@ export function useTableEngine<T extends object>(
       rowSelection: rowSelectionState,
       expanded,
       pagination: controlledPagination,
+      ...(menuEnabled && { columnPinning, columnOrder, columnVisibility }),
     },
 
     // Row selection
@@ -133,6 +177,13 @@ export function useTableEngine<T extends object>(
           // User interaction goes through PaginationBar → pagination.onChange.
         }
       : setLocalPagination,
+
+    // Column menu features (opt-in)
+    ...(menuEnabled && {
+      onColumnPinningChange: setColumnPinning,
+      onColumnOrderChange: setColumnOrder,
+      onColumnVisibilityChange: setColumnVisibility,
+    }),
 
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

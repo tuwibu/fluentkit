@@ -1,6 +1,21 @@
 import type { ReactNode } from 'react'
 
 /**
+ * Column menu feature flags.
+ * Each key maps to one section of the column header dropdown.
+ */
+export interface ColumnMenuConfig {
+  /** Sort asc / desc / clear via dropdown. Default when `columnMenu=true`. */
+  sort?: boolean
+  /** Pin column left / right / unpin. Default when `columnMenu=true`. */
+  pin?: boolean
+  /** Move column left / right via dropdown. Default when `columnMenu=true`. */
+  reorder?: boolean
+  /** Hide this column / toggle any column visibility. Default when `columnMenu=true`. */
+  hide?: boolean
+}
+
+/**
  * Column definition for DataTable.
  * Generic over the row data type T.
  *
@@ -36,6 +51,18 @@ export interface ColumnDef<T> {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- value type is intentionally unknown at column level
   render?: (value: any, record: T, index: number) => ReactNode
+  /**
+   * Allow this column to be pinned via the column menu.
+   * Only relevant when `columnMenu.pin` is enabled.
+   * Default: `true`.
+   */
+  enablePinning?: boolean
+  /**
+   * Allow this column to be hidden via the column menu.
+   * Only relevant when `columnMenu.hide` is enabled.
+   * Default: `true`.
+   */
+  enableHiding?: boolean
 }
 
 /** Server-driven pagination descriptor. */
@@ -129,4 +156,34 @@ export interface DataTableProps<T> {
    * so it can be embedded inside an outer card container.
    */
   bordered?: boolean
+  /**
+   * Column header dropdown menu (OPT-IN).
+   *
+   * - `true` → enable all features: sort, pin, reorder, hide.
+   * - `ColumnMenuConfig` → enable only selected features.
+   * - `false` / omit → no menu; click-to-sort via `sorter` still works (backward-compat).
+   */
+  columnMenu?: boolean | ColumnMenuConfig
+}
+
+/** Resolved (normalised) column menu config — all fields are booleans. */
+export interface ResolvedColumnMenuConfig {
+  sort: boolean
+  pin: boolean
+  reorder: boolean
+  hide: boolean
+}
+
+/** Returns a fully-resolved config from the `columnMenu` prop. */
+export function resolveColumnMenuConfig(
+  columnMenu: DataTableProps<unknown>['columnMenu'],
+): ResolvedColumnMenuConfig | null {
+  if (!columnMenu) return null
+  if (columnMenu === true) return { sort: true, pin: true, reorder: true, hide: true }
+  return {
+    sort: columnMenu.sort ?? false,
+    pin: columnMenu.pin ?? false,
+    reorder: columnMenu.reorder ?? false,
+    hide: columnMenu.hide ?? false,
+  }
 }
