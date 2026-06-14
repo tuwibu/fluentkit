@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
 import { cx } from '../../lib/cx'
 import { SidebarLeaf } from './internal/sidebar-leaf'
 import { SidebarGroup } from './internal/sidebar-group'
@@ -24,6 +24,22 @@ export function Sidebar({
     setActiveEl((prev) => (prev === el ? prev : el))
   }, [])
 
+  // Re-resolve the active element from the live DOM whenever collapse state or
+  // the active key changes. Toggling `collapsed` remounts the leaf button (the
+  // tooltip wrapper is conditional), which can leave the registered ref pointing
+  // at a detached node — the snake-rail would then measure a zeroed rect and
+  // stick at the top. Querying [data-active="true"] always yields the current
+  // button so the rail re-aligns after every collapse/expand.
+  useLayoutEffect(() => {
+    if (!asideEl) return
+    const el = asideEl.querySelector<HTMLElement>('[data-active="true"]')
+    // Ignore an element that is present but not laid out (e.g. the active item
+    // inside a collapsed group with max-height:0) — its zeroed rect would stick
+    // the rail at the top. Leave activeEl as registerActive set it in that case.
+    if (el && el.getBoundingClientRect().height === 0) return
+    setActiveEl((prev) => (prev === el ? prev : el))
+  }, [collapsed, activeKey, asideEl])
+
   return (
     <aside
       ref={setAsideEl}
@@ -36,6 +52,7 @@ export function Sidebar({
       style={{
         width: collapsed ? `${collapsedWidth}px` : `${width}px`,
         borderColor: 'var(--win11-card-border)',
+        transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       {/* Brand bar — h-12, logo 20px + name + version */}

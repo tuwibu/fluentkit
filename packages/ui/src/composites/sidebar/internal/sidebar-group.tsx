@@ -96,10 +96,32 @@ function CollapsedGroupLeaf({
   const elRef = useRef<HTMLButtonElement>(null)
 
   useLayoutEffect(() => {
-    if (!registerActive || !isActive) return
+    if (!registerActive || !isActive || item.disabled) return
     registerActive(elRef.current)
     return () => registerActive(null)
-  }, [isActive, registerActive])
+  }, [isActive, registerActive, item.disabled])
+
+  const iconNode = (
+    <span
+      className="w-[18px] h-[18px] flex-shrink-0 flex items-center justify-center"
+      style={mergedItem.color ? { color: mergedItem.color } : undefined}
+    >
+      {mergedItem.icon}
+    </span>
+  )
+
+  // Disabled child: dimmed, non-interactive — mirror SubLeaf's disabled branch so
+  // collapsing the sidebar doesn't resurrect a disabled item as a clickable leaf.
+  if (item.disabled) {
+    return (
+      <div
+        className={cx(COLLAPSED_LEAF_BASE, 'opacity-40 pointer-events-none select-none')}
+        aria-disabled="true"
+      >
+        {iconNode}
+      </div>
+    )
+  }
 
   return (
     <Tooltip>
@@ -115,12 +137,7 @@ function CollapsedGroupLeaf({
           onClick={() => onSelect(item.key)}
           aria-current={isActive ? 'page' : undefined}
         >
-          <span
-            className="w-[18px] h-[18px] flex-shrink-0 flex items-center justify-center"
-            style={mergedItem.color ? { color: mergedItem.color } : undefined}
-          >
-            {mergedItem.icon}
-          </span>
+          {iconNode}
         </button>
       </TooltipTrigger>
       <TooltipContent side="right" sideOffset={10}>
