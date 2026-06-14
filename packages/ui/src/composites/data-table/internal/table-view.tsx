@@ -153,25 +153,29 @@ export function TableView<T extends object>({
       : rows
 
   return (
-    <div data-slot="data-table" className="flex flex-col w-full overflow-hidden">
+    <div data-slot="data-table" className="flex flex-col w-full h-full min-h-0 overflow-hidden">
       {/* loading sentinel — single element with role="status" for AT + tests */}
       {isLoading && (
         <div data-slot="data-table-loading" role="status" aria-label="Loading" className="sr-only" />
       )}
 
-      {/* Scroll container */}
+      {/* Scroll container — fills the available height so the horizontal scrollbar
+          stays at the visible bottom (reachable) instead of below all rows. */}
       <div
         ref={scrollParentRef}
-        className={cn('overflow-auto w-full', hasScrollY && 'relative')}
+        className={cn('flex-1 min-h-0 overflow-auto w-full', hasScrollY && 'relative')}
         style={hasScrollY ? { maxHeight: scroll!.y, overflowY: 'auto' } : undefined}
       >
         <table
           ref={tableRef}
           className={cn(
-            'w-full text-sm',
+            'text-sm',
+            // Resize: table grows to its column-sum width (w-max) so widening a
+            // column overflows the container and the horizontal scrollbar has a
+            // real range — instead of the auto-fill column eating the drag.
             resizeEnabled
-              ? 'table-fixed border-separate border-spacing-0'
-              : 'border-collapse',
+              ? 'min-w-full w-max table-fixed border-separate border-spacing-0'
+              : 'w-full border-collapse',
           )}
         >
           {/* ── thead ── */}
