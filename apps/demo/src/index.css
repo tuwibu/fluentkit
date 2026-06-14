@@ -1,7 +1,7 @@
 /* =============================================================================
    Demo dev stylesheet.
 
-   The lib ships a PRECOMPILED `@fluent-kit/ui/styles.css` for zero-config
+   The lib ships a PRECOMPILED `@tuwibu/fluentkit/styles.css` for zero-config
    consumers — but that file only contains the utility classes the LIBRARY
    itself uses. The demo screens use additional layout utilities, so here we
    run a full Tailwind pass that scans BOTH the demo source and the lib source,

@@ -33,14 +33,14 @@ function checkExists(relPath) {
   return existsSync(full)
 }
 
-console.log('\nImport smoke test — @fluent-kit/ui\n')
+console.log('\nImport smoke test — @tuwibu/fluentkit\n')
 
 // ── 1. Pre-flight: dist files present ─────────────────────────────────────
 const coreExists = checkExists('index.js') && checkExists('index.cjs')
 const rhfExists = checkExists('rhf/index.js') && checkExists('rhf/index.cjs')
 
 if (!coreExists) {
-  console.error('\nFAIL — dist/index.{js,cjs} missing. Run: npx pnpm@9 --filter @fluent-kit/ui build\n')
+  console.error('\nFAIL — dist/index.{js,cjs} missing. Run: npx pnpm@9 --filter @tuwibu/fluentkit build\n')
   process.exit(1)
 }
 

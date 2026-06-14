@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, FormField, Input, Select, Button, Textarea } from '@fluent-kit/ui'
+import { Modal, FormField, Input, Select, Button, Textarea } from '@tuwibu/fluentkit'
 import {
   PLATFORM_OPTIONS,
   GROUP_OPTIONS,

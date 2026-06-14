@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FormField, Input, Button, Card, CardContent, CardHeader, CardTitle } from '@fluent-kit/ui'
+import { FormField, Input, Button, Card, CardContent, CardHeader, CardTitle } from '@tuwibu/fluentkit'
 import { loginSchema } from './login-schema'
 import type { LoginFormData } from './login-schema'
 import { apiPost } from '@/lib/api-client'

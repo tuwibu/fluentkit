@@ -5,7 +5,7 @@ import {
   CardTitle,
   StatCard,
   StatCardSkeleton,
-} from '@fluent-kit/ui'
+} from '@tuwibu/fluentkit'
 import {
   LineChart,
   Line,
@@ -17,7 +17,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useDashboard } from './use-dashboard'
-import type { StatCardTone } from '@fluent-kit/ui'
+import type { StatCardTone } from '@tuwibu/fluentkit'
 
 function trendToTone(trend: number): StatCardTone {
   return trend >= 0 ? 'success' : 'error'

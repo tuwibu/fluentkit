@@ -8,7 +8,7 @@ import {
   Tabs, TabsList, TabsTrigger, TabsContent,
   DrawerSection, DrawerInfoRow,
   Tag, IconButton, Avatar,
-} from '@fluent-kit/ui'
+} from '@tuwibu/fluentkit'
 import { StatusPill } from '@/components/status-pill'
 import { TotpDisplay } from './internal/totp-display'
 import { AccountRawJson } from './internal/account-raw-json'

@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ThemeProvider, ColorThemeProvider } from '@fluent-kit/ui'
+import { ThemeProvider, ColorThemeProvider } from '@tuwibu/fluentkit'
 import './index.css'
 import App from './App'
 

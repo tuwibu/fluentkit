@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Trash2, Search } from 'lucide-react'
-import { DataTable, BulkBar, Input, FilterSelect, Pagination, Modal, Button } from '@fluent-kit/ui'
+import { DataTable, BulkBar, Input, FilterSelect, Pagination, Modal, Button } from '@tuwibu/fluentkit'
 import { useQueryClient } from '@tanstack/react-query'
 import { apiDelete } from '@/lib/api-client'
 import type { UserRecord } from '@/mocks/fixtures/users.fixtures'

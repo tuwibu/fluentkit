@@ -11,7 +11,7 @@ export default tseslint.config(
   },
 
   // BOUNDARY RULE: packages/ui/src must never import coupling deps
-  // This is the anti-tech-debt guardrail — keeps @fluent-kit/ui fully decoupled
+  // This is the anti-tech-debt guardrail — keeps @tuwibu/fluentkit fully decoupled
   {
     files: ['packages/ui/src/**/*.{ts,tsx}'],
     rules: {

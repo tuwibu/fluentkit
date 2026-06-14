@@ -6,7 +6,7 @@ import type { FormFieldProps } from './form-field.types'
 /**
  * FormField composite — CORE agnostic.
  * Wraps a form control with label, required indicator, description, and error.
- * Does NOT depend on react-hook-form. RHF adapter: @fluent-kit/ui/rhf (Phase 7 subpath).
+ * Does NOT depend on react-hook-form. RHF adapter: @tuwibu/fluentkit/rhf (Phase 7 subpath).
  *
  * A11y wiring:
  * - Creates FormFieldContext so custom controls can call useFormField() to read

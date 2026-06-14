@@ -2,7 +2,7 @@
  * Build artifact verification test.
  *
  * IMPORTANT: Run `build` before this test suite:
- *   npx pnpm@9 --filter @fluent-kit/ui build
+ *   npx pnpm@9 --filter @tuwibu/fluentkit build
  *
  * This test reads already-built dist files; it does NOT trigger a build.
  * Fails fast with a clear message if files are missing.
@@ -29,7 +29,7 @@ describe('Build artifacts — dist/ completeness', () => {
       const fullPath = resolve(DIST, file)
       expect(
         existsSync(fullPath),
-        `dist/${file} not found at ${fullPath} — run: npx pnpm@9 --filter @fluent-kit/ui build`,
+        `dist/${file} not found at ${fullPath} — run: npx pnpm@9 --filter @tuwibu/fluentkit build`,
       ).toBe(true)
     })
   }
@@ -89,7 +89,7 @@ describe('Build artifacts — font files (C1 regression guard)', () => {
   it('dist/files/ directory exists', () => {
     expect(
       existsSync(DIST_FILES),
-      'dist/files/ missing — run: npx pnpm@9 --filter @fluent-kit/ui build',
+      'dist/files/ missing — run: npx pnpm@9 --filter @tuwibu/fluentkit build',
     ).toBe(true)
   })
 

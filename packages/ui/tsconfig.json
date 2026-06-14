@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@fluent-kit/ui": ["./src/index.ts"]
+      "@tuwibu/fluentkit": ["./src/index.ts"]
     },
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },

@@ -9,7 +9,7 @@ import {
   Settings,
   LogIn,
 } from 'lucide-react'
-import type { MenuItem } from '@fluent-kit/ui'
+import type { MenuItem } from '@tuwibu/fluentkit'
 
 const ICON = { size: 18, strokeWidth: 2 } as const
 const CHILD = { size: 16, strokeWidth: 2 } as const

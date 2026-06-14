@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Trash2, Globe } from 'lucide-react'
-import { DataTable, BulkBar, Modal, Button } from '@fluent-kit/ui'
+import { DataTable, BulkBar, Modal, Button } from '@tuwibu/fluentkit'
 import type { ProfileRecord } from '@/mocks/fixtures/profiles.fixtures'
 import { useProfiles } from './use-profiles'
 import { createProfilesColumns } from './profiles-columns'

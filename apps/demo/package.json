@@ -10,7 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@fluent-kit/ui": "workspace:*",
+    "@tuwibu/fluentkit": "workspace:*",
     "@tanstack/react-query": "^5.85.5",
     "axios": "^1.13.5",
     "lucide-react": "^0.556.0",

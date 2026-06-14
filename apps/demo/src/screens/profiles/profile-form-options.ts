@@ -1,4 +1,4 @@
-import type { SelectOption } from '@fluent-kit/ui'
+import type { SelectOption } from '@tuwibu/fluentkit'
 
 export const PLATFORM_OPTIONS: SelectOption[] = [
   { label: 'Google', value: 'google' },

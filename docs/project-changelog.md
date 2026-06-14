@@ -8,7 +8,7 @@ All significant changes to this project are documented in this file. Format foll
 
 ### Initial Release
 
-First stable release of `@fluent-kit/ui` component library and demo app.
+First stable release of `@tuwibu/fluentkit` component library and demo app.
 
 #### Added
 
@@ -51,7 +51,7 @@ First stable release of `@fluent-kit/ui` component library and demo app.
 - Compiled CSS output (dist/styles.css) — zero Tailwind config required in consumer apps
 
 **React Hook Form Integration**
-- `@fluent-kit/ui/rhf` subpath export
+- `@tuwibu/fluentkit/rhf` subpath export
 - `FormFieldAdapter<T>` — wrapper for react-hook-form `useController`
 - `useFormField()` — context hook for field state (error, touched)
 - Optional peer dependencies: react-hook-form, zod

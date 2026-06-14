@@ -1,6 +1,6 @@
 # Development Roadmap — fluentui-react
 
-Long-term vision and upcoming phases for the `@fluent-kit/ui` component library and ecosystem.
+Long-term vision and upcoming phases for the `@tuwibu/fluentkit` component library and ecosystem.
 
 ---
 
@@ -192,7 +192,7 @@ Long-term vision and upcoming phases for the `@fluent-kit/ui` component library 
 
 **Example:**
 ```tsx
-import { ThemeProvider, createTheme } from '@fluent-kit/ui/theme'
+import { ThemeProvider, createTheme } from '@tuwibu/fluentkit/theme'
 
 const myTheme = createTheme({
   colors: { primary: '#0078d4', /* ... */ },
@@ -235,7 +235,7 @@ export function App() {
 
 ## Long-term vision (1.0.0+)
 
-**Stability:** After Phase 9, `@fluent-kit/ui` reaches v1.0.0 (stable, semantic versioning enforced).
+**Stability:** After Phase 9, `@tuwibu/fluentkit` reaches v1.0.0 (stable, semantic versioning enforced).
 
 **Maintenance:** Active maintenance, community contributions welcome.
 

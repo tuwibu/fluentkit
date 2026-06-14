@@ -1,5 +1,5 @@
 {
-  "name": "@fluent-kit/ui",
+  "name": "@tuwibu/fluentkit",
   "version": "0.1.0",
   "description": "React component library with Fluent/Windows-11 design — config-driven antd-shape API, ships compiled CSS (zero Tailwind config required).",
   "keywords": [

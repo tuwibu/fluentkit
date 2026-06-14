@@ -2,18 +2,18 @@
 
 ## High-level overview
 
-`@fluent-kit/ui` là một **component library hai tầng** nhằm decoupling công khai facade từ headless core, cho phép consumer chỉ phụ thuộc vào props contract, không bị ảnh hưởng bởi thay đổi lõi (TanStack, Radix).
+`@tuwibu/fluentkit` là một **component library hai tầng** nhằm decoupling công khai facade từ headless core, cho phép consumer chỉ phụ thuộc vào props contract, không bị ảnh hưởng bởi thay đổi lõi (TanStack, Radix).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        Consumer App                         │
-│  (Vite / Next.js / CRA — dùng @fluent-kit/ui components)   │
+│  (Vite / Next.js / CRA — dùng @tuwibu/fluentkit components)   │
 └────────────────────────┬────────────────────────────────────┘
                          │
                    Props + Callbacks
                          │
         ┌────────────────▼────────────────┐
-        │  @fluent-kit/ui (Public API)    │
+        │  @tuwibu/fluentkit (Public API)    │
         │  ────────────────────────────    │
         │  • Primitives (16 components)   │
         │  • Composites (9 components)    │
@@ -152,7 +152,7 @@ src/styles/index.css
 
 **Consumer usage:**
 ```tsx
-import '@fluent-kit/ui/styles.css'  // That's it — no Tailwind, no PostCSS, no config
+import '@tuwibu/fluentkit/styles.css'  // That's it — no Tailwind, no PostCSS, no config
 ```
 
 ### Design tokens (CSS custom properties)
@@ -236,7 +236,7 @@ export function Button({ size, variant, ...props }: ButtonProps) {
 ```tsx
 // Consumer code
 import { useForm, useController } from 'react-hook-form'
-import { FormFieldAdapter } from '@fluent-kit/ui/rhf'
+import { FormFieldAdapter } from '@tuwibu/fluentkit/rhf'
 
 function MyForm() {
   const { control } = useForm()
@@ -413,7 +413,7 @@ tailwindcss -i src/styles/index.css -o dist/styles.css --minify && node scripts/
 }
 ```
 
-**Multi-entry:** allows `import { Button } from '@fluent-kit/ui'` AND `import { FormFieldAdapter } from '@fluent-kit/ui/rhf'`
+**Multi-entry:** allows `import { Button } from '@tuwibu/fluentkit'` AND `import { FormFieldAdapter } from '@tuwibu/fluentkit/rhf'`
 
 ---
 

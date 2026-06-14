@@ -1,5 +1,5 @@
-import type { ColumnDef } from '@fluent-kit/ui'
-import { Tag, IconButton, Avatar, getTagColor } from '@fluent-kit/ui'
+import type { ColumnDef } from '@tuwibu/fluentkit'
+import { Tag, IconButton, Avatar, getTagColor } from '@tuwibu/fluentkit'
 import { Play, Pencil, Trash2, Globe } from 'lucide-react'
 import { StatusPill } from '@/components/status-pill'
 import type { ProfileRecord } from '@/mocks/fixtures/profiles.fixtures'

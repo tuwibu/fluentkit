@@ -1,13 +1,13 @@
-# @fluent-kit/ui Cook Session — 8/8 Phases Complete, Package Ready for Publish
+# @tuwibu/fluentkit Cook Session — 8/8 Phases Complete, Package Ready for Publish
 
 **Date**: 2026-06-13 17:05  
 **Severity**: Low (summary of successful completion + knowledge capture)  
-**Component**: Monorepo pnpm, @fluent-kit/ui v0.1.0 library, build pipeline, publish infra  
+**Component**: Monorepo pnpm, @tuwibu/fluentkit v0.1.0 library, build pipeline, publish infra  
 **Status**: Resolved
 
 ## What Happened
 
-Cook session wrapped all 8 phases of @fluent-kit/ui component library (Fluent design system facade, private TanStack primitives, headless RHF adapter). Library shipped at v0.1.0 with 16 Radix/custom primitives + 9 facade composites (DataTable, Modal, Input, Select, FormField, Badge, Checkbox, DateRangePicker, ConfirmDialog), compiled CSS (Fluent/Windows 11 tokens), multi-entry tsup build (ESM+CJS+.d.ts), demo app with 5 screens + MSW, and changesets-based publish pipeline. 
+Cook session wrapped all 8 phases of @tuwibu/fluentkit component library (Fluent design system facade, private TanStack primitives, headless RHF adapter). Library shipped at v0.1.0 with 16 Radix/custom primitives + 9 facade composites (DataTable, Modal, Input, Select, FormField, Badge, Checkbox, DateRangePicker, ConfirmDialog), compiled CSS (Fluent/Windows 11 tokens), multi-entry tsup build (ESM+CJS+.d.ts), demo app with 5 screens + MSW, and changesets-based publish pipeline. 
 
 Package tarball (266 KB) includes 23 files, 399 unit tests + 17 demo tests all green, `npm publish --dry-run` succeeded, consumer e2e smoke passed 24/24 checks. Ready for first public release pending placeholder `repository.url` update and NPM_TOKEN secret creation.
 
@@ -31,7 +31,7 @@ Code review caught a real a11y bug that the original implementation papered over
 **Private TanStack Bundling:**
 - @tanstack/react-table + @tanstack/react-virtual moved to devDependencies, bundled into dist (180 KB of 244 KB ESM).
 - Rationale: consumer doesn't manage these — they are implementation detail of DataTable + virtualization.
-- Trade-off: consumers can't patch TanStack directly (must publish @fluent-kit/ui fix). Acceptable for first release.
+- Trade-off: consumers can't patch TanStack directly (must publish @tuwibu/fluentkit fix). Acceptable for first release.
 
 **CSS Strategy:**
 - Tailwind compiled to `dist/styles.css` (55 KB) with Fluent tokens (color, spacing, radius per Windows 11 design language).
@@ -106,7 +106,7 @@ Code review caught a real a11y bug that the original implementation papered over
 
 **Blocking before first publish:**
 1. **Update `repository.url` placeholder** in `packages/ui/package.json` (currently `https://github.com/your-org/fluentui-react`). Replace with actual GitHub URL. *Owner: user*.
-2. **Create NPM_TOKEN secret** in GitHub repo Settings → Secrets → Actions. Use npm Granular Access Token with publish permission on `@fluent-kit/ui`. *Owner: user*.
+2. **Create NPM_TOKEN secret** in GitHub repo Settings → Secrets → Actions. Use npm Granular Access Token with publish permission on `@tuwibu/fluentkit`. *Owner: user*.
 
 **After publish:**
 1. **Windowed pagination** (M3 deferred): Add `windowSize` prop to PaginationBar, render ellipsis for large page counts (>~10 pages). Not urgent for 0.1.0.
@@ -116,7 +116,7 @@ Code review caught a real a11y bug that the original implementation papered over
 **Observability:**
 - npm registry stats (downloads, users, ratings).
 - GitHub releases / CHANGELOG.md updates per changesets verdicts.
-- Consumer feedback loop: open issues on @fluent-kit/ui from public.
+- Consumer feedback loop: open issues on @tuwibu/fluentkit from public.
 
 ---
 

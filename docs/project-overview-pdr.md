@@ -1,12 +1,12 @@
 # Project Overview & PDR — fluentui-react
 
-**Product Development Requirements (PDR) for `@fluent-kit/ui` — v0.1.0**
+**Product Development Requirements (PDR) for `@tuwibu/fluentkit` — v0.1.0**
 
 ---
 
 ## Executive Summary
 
-`@fluent-kit/ui` is a **production-ready React component library** with Fluent/Windows-11 design language, publishable on npm as `@fluent-kit/ui`. It provides ~25 UI components (16 primitives + 9 composites) with config-driven, antd-shaped API, ships pre-compiled CSS (zero Tailwind setup needed in consumer apps), and includes optional react-hook-form adapter.
+`@tuwibu/fluentkit` is a **production-ready React component library** with Fluent/Windows-11 design language, publishable on npm as `@tuwibu/fluentkit`. It provides ~25 UI components (16 primitives + 9 composites) with config-driven, antd-shaped API, ships pre-compiled CSS (zero Tailwind setup needed in consumer apps), and includes optional react-hook-form adapter.
 
 **Target:** Professional web apps needing modern, accessible, type-safe component library.
 
@@ -200,14 +200,14 @@ useEffect(() => {
 **Rationale:** Ship `styles.css` with all Tailwind utilities pre-generated + fonts bundled. Consumer imports once; no Tailwind setup needed.
 
 ```tsx
-import '@fluent-kit/ui/styles.css'  // Done. No tailwind.config.ts needed.
+import '@tuwibu/fluentkit/styles.css'  // Done. No tailwind.config.ts needed.
 ```
 
 **Trade-off:** Larger CSS file (~150KB) vs. zero config, instant setup.
 
 ### RHF as optional subpath
 
-**Rationale:** Keep main lib unopinionated. Consumers may use RHF, Formik, plain state, etc. Adapter available at `@fluent-kit/ui/rhf` for RHF users.
+**Rationale:** Keep main lib unopinionated. Consumers may use RHF, Formik, plain state, etc. Adapter available at `@tuwibu/fluentkit/rhf` for RHF users.
 
 **Trade-off:** Two entry points slightly more complex vs. flexibility.
 

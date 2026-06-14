@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
   Skeleton,
-} from '@fluent-kit/ui'
-import type { SelectOption } from '@fluent-kit/ui'
+} from '@tuwibu/fluentkit'
+import type { SelectOption } from '@tuwibu/fluentkit'
 import { useSettings } from './use-settings'
 
 const THEME_OPTIONS: SelectOption[] = [

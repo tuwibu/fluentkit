@@ -1,9 +1,9 @@
-# @fluent-kit/ui
+# @tuwibu/fluentkit
 
 Thư viện component React theo phong cách **Windows 11 Fluent Design** — xây trên **React 18 + Tailwind CSS v4 + Radix UI + lucide-react**. API hướng cấu hình kiểu antd: truyền `menu`/`items`/`columns`/`options` vào là ra giao diện, kèm sẵn dark/light + color presets.
 
 Monorepo (pnpm workspaces):
-- `packages/ui` — thư viện `@fluent-kit/ui` (publishable).
+- `packages/ui` — thư viện `@tuwibu/fluentkit` (publishable).
 - `apps/demo` — app demo (Vite + React Router) minh hoạ toàn bộ component.
 
 ---
@@ -11,7 +11,7 @@ Monorepo (pnpm workspaces):
 ## Cài đặt
 
 ```bash
-pnpm add @fluent-kit/ui
+pnpm add @tuwibu/fluentkit
 # peer deps
 pnpm add react react-dom next-themes
 # (tuỳ chọn) cho form: react-hook-form zod
@@ -20,7 +20,7 @@ pnpm add react react-dom next-themes
 CSS đã được **biên dịch sẵn** (zero-config, không cần Tailwind ở app tiêu dùng) — chỉ cần import 1 lần ở entry:
 
 ```ts
-import '@fluent-kit/ui/styles.css'
+import '@tuwibu/fluentkit/styles.css'
 ```
 
 ---
@@ -30,8 +30,8 @@ import '@fluent-kit/ui/styles.css'
 Bọc app trong `ThemeProvider` (dark/light qua `next-themes`) + `ColorThemeProvider` (6 preset sáng + 4 tối, lưu `localStorage`):
 
 ```tsx
-import { ThemeProvider, ColorThemeProvider } from '@fluent-kit/ui'
-import '@fluent-kit/ui/styles.css'
+import { ThemeProvider, ColorThemeProvider } from '@tuwibu/fluentkit'
+import '@tuwibu/fluentkit/styles.css'
 
 export function Root({ children }) {
   return (
@@ -47,7 +47,7 @@ export function Root({ children }) {
 Đổi theme trong code:
 
 ```tsx
-import { useTheme, useColorTheme } from '@fluent-kit/ui'
+import { useTheme, useColorTheme } from '@tuwibu/fluentkit'
 
 const { resolvedTheme, setTheme } = useTheme()        // 'dark' | 'light'
 const { currentTheme, setTheme: setColor, themeOptions } = useColorTheme()
@@ -60,7 +60,7 @@ const { currentTheme, setTheme: setColor, themeOptions } = useColorTheme()
 `AppShell` ráp sẵn: wallpaper → lớp mica (`backdrop-filter: blur(30px)`) → sidebar + header + content + footer. Chỉ cần truyền `menu`:
 
 ```tsx
-import { AppShell, UserDropdown } from '@fluent-kit/ui'
+import { AppShell, UserDropdown } from '@tuwibu/fluentkit'
 import { LayoutDashboard, Users, Settings } from 'lucide-react'
 
 const menu = [
@@ -131,7 +131,7 @@ function App() {
 | `DateRangePopover` | Chọn khoảng ngày | `value`, `onChange`, `presets?` |
 | `SegmentedControl` | Nhóm nút segmented | `options`, `value`, `onChange` |
 
-> Form tích hợp `react-hook-form` có sẵn ở entry phụ: `import { ... } from '@fluent-kit/ui/rhf'`.
+> Form tích hợp `react-hook-form` có sẵn ở entry phụ: `import { ... } from '@tuwibu/fluentkit/rhf'`.
 
 ### Primitives
 `Button` (`variant`: default/destructive/outline/secondary/ghost/link; `size`: sm/default/lg/icon/icon-sm/icon-lg), `Tag`, `Badge`, `Tabs`, `Checkbox`, `Switch`, `Textarea`, `Label`, `Separator`, `Skeleton`. Tiện ích: `cn`, `cx`.
@@ -153,7 +153,7 @@ function App() {
 ### Ví dụ — FilterSelect với icon brand và màu status
 
 ```tsx
-import { FilterSelect, getTagColor } from '@fluent-kit/ui'
+import { FilterSelect, getTagColor } from '@tuwibu/fluentkit'
 import { SiFacebook, SiGoogle } from 'react-icons/si'
 
 // Loại 3 — Platform filter với icon brand
@@ -190,7 +190,7 @@ const tagOptions = ['vip', 'seed', 'warmup'].map((t) => ({
 ### Ví dụ — StatCard
 
 ```tsx
-import { StatCard, StatCardSkeleton } from '@fluent-kit/ui'
+import { StatCard, StatCardSkeleton } from '@tuwibu/fluentkit'
 
 // Loading skeleton
 {isLoading ? <StatCardSkeleton /> : (
@@ -210,7 +210,7 @@ import { StatCard, StatCardSkeleton } from '@fluent-kit/ui'
 ## Ví dụ Modal + xác nhận xóa
 
 ```tsx
-import { Modal, Button } from '@fluent-kit/ui'
+import { Modal, Button } from '@tuwibu/fluentkit'
 
 <Modal
   open={!!target}
@@ -235,13 +235,13 @@ import { Modal, Button } from '@fluent-kit/ui'
 pnpm install
 
 # Build thư viện (JS + CSS + fonts)
-pnpm --filter @fluent-kit/ui build
+pnpm --filter @tuwibu/fluentkit build
 
 # Chạy demo (Vite, http://localhost:5173)
 pnpm --filter demo dev
 
 # Test / typecheck
-pnpm --filter @fluent-kit/ui test
+pnpm --filter @tuwibu/fluentkit test
 pnpm -r typecheck
 
 # Storybook

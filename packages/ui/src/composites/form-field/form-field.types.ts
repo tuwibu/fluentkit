@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
  * Props for the FormField composite component.
  *
  * Core agnostic — does NOT bind to react-hook-form.
- * A separate RHF adapter (`@fluent-kit/ui/rhf`) wraps this component
+ * A separate RHF adapter (`@tuwibu/fluentkit/rhf`) wraps this component
  * using `useController` and is an optional peer dependency.
  */
 export interface FormFieldProps {

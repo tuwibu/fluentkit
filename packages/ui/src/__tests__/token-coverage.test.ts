@@ -2,7 +2,7 @@
  * Token coverage test — reads tokens.css as text and asserts all required
  * CSS variables exist under BOTH :root and .dark selectors.
  *
- * Run: npx pnpm@9 --filter @fluent-kit/ui test
+ * Run: npx pnpm@9 --filter @tuwibu/fluentkit test
  * Must be GREEN before ship. Add new required vars here when extending the token set.
  */
 import { readFileSync } from 'node:fs'

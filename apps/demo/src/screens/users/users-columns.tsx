@@ -1,5 +1,5 @@
-import type { ColumnDef } from '@fluent-kit/ui'
-import { Badge, IconButton } from '@fluent-kit/ui'
+import type { ColumnDef } from '@tuwibu/fluentkit'
+import { Badge, IconButton } from '@tuwibu/fluentkit'
 import { Trash2 } from 'lucide-react'
 import type { UserRecord } from '@/mocks/fixtures/users.fixtures'
 

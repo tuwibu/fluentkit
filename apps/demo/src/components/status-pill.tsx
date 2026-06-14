@@ -9,8 +9,8 @@
  *
  * Colors match reference VARIANT_PILL exactly (emerald/amber/red/gray).
  */
-import { cn } from '@fluent-kit/ui'
-import type { TagSize } from '@fluent-kit/ui'
+import { cn } from '@tuwibu/fluentkit'
+import type { TagSize } from '@tuwibu/fluentkit'
 
 export type ProfileStatus = 'Live' | 'Die' | 'Login Failed' | 'Pending'
 

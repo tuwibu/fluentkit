@@ -4,8 +4,8 @@
  */
 import type { ReactNode } from 'react'
 import { SiFacebook, SiGoogle, SiX } from 'react-icons/si'
-import type { SelectOption } from '@fluent-kit/ui'
-import { getTagColor } from '@fluent-kit/ui'
+import type { SelectOption } from '@tuwibu/fluentkit'
+import { getTagColor } from '@tuwibu/fluentkit'
 import { PROFILE_FIXTURES } from '@/mocks/fixtures/profiles.fixtures'
 
 // ---- Platform ----------------------------------------------------------------

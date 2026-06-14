@@ -35,12 +35,12 @@ importers:
 
   apps/demo:
     dependencies:
-      '@fluent-kit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.85.5
         version: 5.101.0(react@18.3.1)
+      '@tuwibu/fluentkit':
+        specifier: workspace:*
+        version: link:../../packages/ui
       axios:
         specifier: ^1.13.5
         version: 1.17.0

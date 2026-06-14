@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { AppShell, UserDropdown } from '@fluent-kit/ui'
+import { AppShell, UserDropdown } from '@tuwibu/fluentkit'
 import { queryClient } from '@/lib/query-client'
 import { MENU_ITEMS, getActiveKey, getMenuTitle } from '@/config/menu'
 import { DashboardScreen } from '@/screens/dashboard/dashboard-screen'

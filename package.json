@@ -13,7 +13,7 @@
     "build-storybook": "storybook build",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm -r --filter @fluent-kit/ui build && changeset publish"
+    "release": "pnpm -r --filter @tuwibu/fluentkit build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",

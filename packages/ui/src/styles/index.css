@@ -1,7 +1,7 @@
 /* =============================================================================
-   @fluent-kit/ui — compiled stylesheet entry point
-   Consumer: import '@fluent-kit/ui/styles.css' (resolves to dist/styles.css)
-   Build:    npx pnpm@9 --filter @fluent-kit/ui build:css
+   @tuwibu/fluentkit — compiled stylesheet entry point
+   Consumer: import '@tuwibu/fluentkit/styles.css' (resolves to dist/styles.css)
+   Build:    npx pnpm@9 --filter @tuwibu/fluentkit build:css
    ============================================================================= */
 
 /* ── Fonts — bundled for zero-config (no extra installs for consumers) ─────── */

@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { Button, FilterSelect, Input, Select, IconButton, Switch, Label } from '@fluent-kit/ui'
+import { Button, FilterSelect, Input, Select, IconButton, Switch, Label } from '@tuwibu/fluentkit'
 import { RefreshCw, Columns3, Search, Plus } from 'lucide-react'
 import type { ProfileFilters } from './use-profiles'
 import {

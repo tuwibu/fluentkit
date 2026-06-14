@@ -2,7 +2,7 @@
  * Build smoke test — asserts dist/styles.css was produced correctly.
  *
  * IMPORTANT: Run `build:css` before this test suite:
- *   npx pnpm@9 --filter @fluent-kit/ui build:css
+ *   npx pnpm@9 --filter @tuwibu/fluentkit build:css
  *
  * This test reads the already-built file; it does NOT trigger a build.
  * Fails fast with a clear message if the file is missing.
@@ -25,7 +25,7 @@ describe('Build smoke — dist/styles.css', () => {
   it('dist/styles.css exists (run build:css first if this fails)', () => {
     expect(
       existsSync(STYLES_PATH),
-      `dist/styles.css not found at ${STYLES_PATH} — run: npx pnpm@9 --filter @fluent-kit/ui build:css`,
+      `dist/styles.css not found at ${STYLES_PATH} — run: npx pnpm@9 --filter @tuwibu/fluentkit build:css`,
     ).toBe(true)
   })
 

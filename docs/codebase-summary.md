@@ -1,7 +1,7 @@
 # Codebase Summary — fluentui-react
 
 ## Tổng quan
-Monorepo pnpm chứa component library React publishable (`@fluent-kit/ui`) và demo app không publish. Library cung cấp ~25 component UI (16 primitives + 9 composites) với thiết kế Fluent/Windows-11, API config-driven shape như antd, shipping CSS đã compile (zero Tailwind config yêu cầu ở app consumer).
+Monorepo pnpm chứa component library React publishable (`@tuwibu/fluentkit`) và demo app không publish. Library cung cấp ~25 component UI (16 primitives + 9 composites) với thiết kế Fluent/Windows-11, API config-driven shape như antd, shipping CSS đã compile (zero Tailwind config yêu cầu ở app consumer).
 
 **Repo root:** `D:/code/tu/fluentui-react`  
 **Version hiện tại:** 0.1.0 (first release candidate)  
@@ -15,7 +15,7 @@ Monorepo pnpm chứa component library React publishable (`@fluent-kit/ui`) và 
 ```
 fluentui-react/
 ├── packages/
-│   └── ui/                          # publishable library (@fluent-kit/ui)
+│   └── ui/                          # publishable library (@tuwibu/fluentkit)
 │       ├── src/
 │       │   ├── primitives/          # 16 base components (headless-ready)
 │       │   │   ├── badge, button, card, checkbox, dropdown-menu, input,
@@ -64,13 +64,13 @@ fluentui-react/
 
 ## Packages
 
-### `@fluent-kit/ui` (packages/ui)
+### `@tuwibu/fluentkit` (packages/ui)
 **Publishable component library.**
 
 **Exports:**
-- **Main:** `@fluent-kit/ui` — all components (primitives + composites), ColumnDef, design tokens
-- **Subpath:** `@fluent-kit/ui/rhf` — react-hook-form wrapper (FormFieldAdapter, useFormField)
-- **Styles:** `@fluent-kit/ui/styles.css` — pre-compiled CSS (Tailwind + Geist font + theme tokens)
+- **Main:** `@tuwibu/fluentkit` — all components (primitives + composites), ColumnDef, design tokens
+- **Subpath:** `@tuwibu/fluentkit/rhf` — react-hook-form wrapper (FormFieldAdapter, useFormField)
+- **Styles:** `@tuwibu/fluentkit/styles.css` — pre-compiled CSS (Tailwind + Geist font + theme tokens)
 
 **Entry point:** `packages/ui/src/index.ts`
 
@@ -100,7 +100,7 @@ fluentui-react/
 - ✅ Headless core not exported (only facade)
 - ESLint enforces: `no-store`, `no-services`, `no-wails`, `no-redux`, `no-router`, `no-axios`
 
-**RHF adapter:** `@fluent-kit/ui/rhf` (subpath, optional)
+**RHF adapter:** `@tuwibu/fluentkit/rhf` (subpath, optional)
 - Exports: `FormFieldAdapter<T>`, `useFormField()`
 - Integrates controlled FormField with `useController` (react-hook-form v7)
 - Zod validation optional (no peer dependency enforced, but shown in demo)
@@ -110,7 +110,7 @@ fluentui-react/
 ### `demo` (apps/demo)
 **Non-publishable demo app** (Vite + React Router 7 + TanStack Query).
 
-**Purpose:** Showcase 5 sample screens (Users, Products, Invoices, Profile, Dashboard) using `@fluent-kit/ui` components.
+**Purpose:** Showcase 5 sample screens (Users, Products, Invoices, Profile, Dashboard) using `@tuwibu/fluentkit` components.
 
 **Architecture:**
 - **API contract:** `src/api/contract.ts` — envelope shape `{ success, data?, message? }`

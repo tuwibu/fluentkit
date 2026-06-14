@@ -1,4 +1,4 @@
-import { Pagination } from '@fluent-kit/ui'
+import { Pagination } from '@tuwibu/fluentkit'
 
 interface ProfilesFooterProps {
   page: number

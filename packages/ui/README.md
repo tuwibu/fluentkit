@@ -1,22 +1,22 @@
-# @fluent-kit/ui
+# @tuwibu/fluentkit
 
 React component library with Fluent/Windows-11 design language. Config-driven antd-shaped API, ships compiled CSS — zero Tailwind configuration required in your app.
 
-[![npm](https://img.shields.io/npm/v/@fluent-kit/ui)](https://www.npmjs.com/package/@fluent-kit/ui)
-[![license](https://img.shields.io/npm/l/@fluent-kit/ui)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/@tuwibu/fluentkit)](https://www.npmjs.com/package/@tuwibu/fluentkit)
+[![license](https://img.shields.io/npm/l/@tuwibu/fluentkit)](./LICENSE)
 
 ## Install
 
 ```bash
-pnpm add @fluent-kit/ui react react-dom
+pnpm add @tuwibu/fluentkit react react-dom
 # or
-npm install @fluent-kit/ui react react-dom
+npm install @tuwibu/fluentkit react react-dom
 ```
 
 **Peer dependencies:**
 - `react` ^18.2.0 (required)
 - `react-dom` ^18.2.0 (required)
-- `react-hook-form` ^7.68.0 (optional — only for `@fluent-kit/ui/rhf` subpath)
+- `react-hook-form` ^7.68.0 (optional — only for `@tuwibu/fluentkit/rhf` subpath)
 - `zod` ^3.24.0 (optional — only for RHF + Zod validation)
 
 ## Quickstart
@@ -24,7 +24,7 @@ npm install @fluent-kit/ui react react-dom
 **1. Import styles once at your app root** (e.g. `main.tsx` or `_app.tsx`):
 
 ```tsx
-import '@fluent-kit/ui/styles.css'
+import '@tuwibu/fluentkit/styles.css'
 ```
 
 That's it — no Tailwind config, no PostCSS setup, no font download. Geist font is bundled.
@@ -32,8 +32,8 @@ That's it — no Tailwind config, no PostCSS setup, no font download. Geist font
 **2. Use components:**
 
 ```tsx
-import { Button, Input, Select, FormField, Modal, DataTable } from '@fluent-kit/ui'
-import type { ColumnDef } from '@fluent-kit/ui'
+import { Button, Input, Select, FormField, Modal, DataTable } from '@tuwibu/fluentkit'
+import type { ColumnDef } from '@tuwibu/fluentkit'
 import { useState } from 'react'
 
 type User = { id: number; name: string; email: string; role: string }
@@ -218,7 +218,7 @@ Config-driven table. API mirrors antd `Table` subset; backed by TanStack Table (
 **Imperative confirm:**
 
 ```tsx
-import { modal } from '@fluent-kit/ui'
+import { modal } from '@tuwibu/fluentkit'
 
 await modal.confirm({
   title: 'Delete user?',
@@ -282,7 +282,7 @@ All native `<input>` attributes (`id`, `name`, `aria-*`, `autoComplete`, etc.) a
 
 ## RHF Adapter
 
-`@fluent-kit/ui/rhf` provides `FormFieldController` — connects `FormField` to react-hook-form via `useController`. Install the optional peers first:
+`@tuwibu/fluentkit/rhf` provides `FormFieldController` — connects `FormField` to react-hook-form via `useController`. Install the optional peers first:
 
 ```bash
 pnpm add react-hook-form zod @hookform/resolvers
@@ -292,8 +292,8 @@ pnpm add react-hook-form zod @hookform/resolvers
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { FormFieldController } from '@fluent-kit/ui/rhf'
-import { Input, Button } from '@fluent-kit/ui'
+import { FormFieldController } from '@tuwibu/fluentkit/rhf'
+import { Input, Button } from '@tuwibu/fluentkit'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

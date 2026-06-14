@@ -1,7 +1,7 @@
 /**
  * RHF adapter for FormField.
  * Wraps the core agnostic FormField with react-hook-form useController.
- * Consumer must have react-hook-form installed (optional peerDep on @fluent-kit/ui).
+ * Consumer must have react-hook-form installed (optional peerDep on @tuwibu/fluentkit).
  */
 import type { ReactNode } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'

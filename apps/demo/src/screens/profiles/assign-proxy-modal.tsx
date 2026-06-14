@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { Modal, Tabs, TabsList, TabsTrigger, TabsContent, FormField, Input, Button } from '@fluent-kit/ui'
+import { Modal, Tabs, TabsList, TabsTrigger, TabsContent, FormField, Input, Button } from '@tuwibu/fluentkit'
 
 interface AssignProxyModalProps {
   open: boolean
