@@ -1,8 +1,19 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+  type ReactNode,
+} from 'react'
 
 interface AppShellState {
   collapsed: boolean
   toggleSidebar: () => void
+  /** Mobile off-canvas drawer open state (only meaningful below `md`). */
+  mobileOpen: boolean
+  setMobileOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const AppShellContext = createContext<AppShellState | undefined>(undefined)
@@ -14,6 +25,7 @@ interface AppShellProviderProps {
 
 export function AppShellProvider({ children, defaultCollapsed = false }: AppShellProviderProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const toggleSidebar = () => setCollapsed((v) => !v)
 
@@ -34,7 +46,7 @@ export function AppShellProvider({ children, defaultCollapsed = false }: AppShel
   }, [collapsed])
 
   return (
-    <AppShellContext.Provider value={{ collapsed, toggleSidebar }}>
+    <AppShellContext.Provider value={{ collapsed, toggleSidebar, mobileOpen, setMobileOpen }}>
       {children}
     </AppShellContext.Provider>
   )

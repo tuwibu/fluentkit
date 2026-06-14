@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
 import { Sidebar } from '../sidebar/sidebar'
 import { Header } from '../header/header'
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '../../primitives/sheet'
+import { useIsMobile } from '../../lib/use-is-mobile'
 import { AppShellProvider, useAppShell } from './app-shell-context'
 import type { AppShellProps } from './app-shell.types'
 
@@ -14,7 +17,20 @@ function AppShellInner({
   footer,
   children,
 }: Omit<AppShellProps, 'defaultCollapsed'>) {
-  const { collapsed, toggleSidebar } = useAppShell()
+  const { collapsed, toggleSidebar, mobileOpen, setMobileOpen } = useAppShell()
+  const isMobile = useIsMobile()
+
+  // Drop any leftover open state when leaving mobile (e.g. orientation change),
+  // so re-entering mobile doesn't flash the drawer open without a user action.
+  useEffect(() => {
+    if (!isMobile) setMobileOpen(false)
+  }, [isMobile, setMobileOpen])
+
+  // Closes the mobile drawer after navigating; on desktop this is a no-op.
+  const handleSelect = (key: string) => {
+    onSelect(key)
+    if (isMobile) setMobileOpen(false)
+  }
 
   return (
     <>
@@ -34,14 +50,44 @@ function AppShellInner({
         >
           {/* Horizontal row: sidebar + content column */}
           <div className="flex flex-1 min-h-0 overflow-hidden">
-            <Sidebar
-              items={menu}
-              activeKey={activeKey}
-              onSelect={onSelect}
-              collapsed={collapsed}
-              brand={brand}
-              userSlot={user}
-            />
+            {/* Desktop / tablet (≥md): inline sidebar in the layout flow */}
+            {!isMobile && (
+              <Sidebar
+                items={menu}
+                activeKey={activeKey}
+                onSelect={handleSelect}
+                collapsed={collapsed}
+                brand={brand}
+                userSlot={user}
+              />
+            )}
+
+            {/* Mobile (<md): off-canvas drawer — reuses the Sheet primitive
+                (backdrop, focus-trap, Escape-to-close all handled by Radix). */}
+            {isMobile && (
+              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                <SheetContent
+                  side="left"
+                  className="p-0 gap-0 w-[220px] sm:max-w-[220px]"
+                  hideClose
+                >
+                  {/* Radix Dialog requires a labelled title/description for screen
+                      readers; the nav itself is the visible content. */}
+                  <SheetTitle className="sr-only">Navigation</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Main navigation menu
+                  </SheetDescription>
+                  <Sidebar
+                    items={menu}
+                    activeKey={activeKey}
+                    onSelect={handleSelect}
+                    brand={brand}
+                    userSlot={user}
+                    className="h-full border-r-0"
+                  />
+                </SheetContent>
+              </Sheet>
+            )}
 
             {/* Content column: header + scrollable main */}
             <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
@@ -51,9 +97,19 @@ function AppShellInner({
                 leading={
                   <button
                     type="button"
-                    onClick={toggleSidebar}
-                    aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                    aria-expanded={!collapsed}
+                    onClick={() =>
+                      isMobile ? setMobileOpen((v) => !v) : toggleSidebar()
+                    }
+                    aria-label={
+                      isMobile
+                        ? mobileOpen
+                          ? 'Close navigation'
+                          : 'Open navigation'
+                        : collapsed
+                          ? 'Expand sidebar'
+                          : 'Collapse sidebar'
+                    }
+                    aria-expanded={isMobile ? mobileOpen : !collapsed}
                     className="flex items-center justify-center w-8 h-8 rounded hover:bg-white/10 transition-colors"
                   >
                     <svg

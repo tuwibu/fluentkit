@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { LayoutGrid, UserCircle, IdCard } from 'lucide-react'
 import { AppShell } from './app-shell'
 import { AppShellProvider, useAppShell } from './app-shell-context'
@@ -37,7 +37,21 @@ function renderShell(props: Partial<React.ComponentProps<typeof AppShell>> = {})
 }
 
 describe('AppShell', () => {
+  beforeEach(() => {
+    // Pin desktop viewport so these tests don't depend on jsdom's matchMedia default.
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({
+        matches: false,
+        media: '(max-width: 767px)',
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    )
+  })
+
   afterEach(() => {
+    vi.unstubAllGlobals()
     // Clean up body class between tests.
     document.body.classList.remove('sb-collapsed')
   })
@@ -154,6 +168,52 @@ describe('AppShell', () => {
       await user.click(screen.getByRole('button', { name: /expand sidebar/i }))
       expect(document.body.classList.contains('sb-collapsed')).toBe(false)
     })
+  })
+})
+
+describe('AppShell mobile drawer (<md)', () => {
+  function mockMobile() {
+    const mql = {
+      matches: true,
+      media: '(max-width: 767px)',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => mql),
+    )
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    document.body.classList.remove('sb-collapsed')
+  })
+
+  it('hides the sidebar nav by default on mobile', () => {
+    mockMobile()
+    renderShell()
+    // Drawer closed → Radix Dialog content not mounted → no nav item rendered.
+    expect(screen.queryByRole('button', { name: 'Dashboard' })).not.toBeInTheDocument()
+  })
+
+  it('opens the drawer and reveals nav when hamburger is clicked', async () => {
+    mockMobile()
+    const user = userEvent.setup()
+    renderShell()
+    await user.click(screen.getByRole('button', { name: /open navigation/i }))
+    expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument()
+  })
+
+  it('closes the drawer after selecting a nav item', async () => {
+    mockMobile()
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    renderShell({ onSelect })
+    await user.click(screen.getByRole('button', { name: /open navigation/i }))
+    await user.click(screen.getByRole('button', { name: 'Dashboard' }))
+    expect(onSelect).toHaveBeenCalledWith('dashboard')
+    expect(screen.queryByRole('button', { name: 'Dashboard' })).not.toBeInTheDocument()
   })
 })
 
