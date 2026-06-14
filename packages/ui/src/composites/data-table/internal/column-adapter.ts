@@ -56,6 +56,10 @@ export function adaptColumn<T>(
     header: () => col.title,
     enableSorting: hasSorter,
     enablePinning,
+    // Per-column resize opt-in. Resizable columns get a sane min width so the
+    // drag can't collapse them to zero.
+    enableResizing: col.resize ?? false,
+    ...(col.resize ? { minSize: 60 } : {}),
     ...(enableHiding !== undefined ? { enableHiding } : {}),
     ...(sortingFn ? { sortingFn } : {}),
     ...(cellRenderer ? { cell: cellRenderer } : {}),

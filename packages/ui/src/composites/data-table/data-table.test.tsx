@@ -391,3 +391,35 @@ describe('DataTable — scroll + fixed', () => {
     expect(screen.getByText('Alice')).toBeInTheDocument()
   })
 })
+
+// ── column resize (gated by resize: true) ─────────────────────────────────────
+describe('DataTable — column resize', () => {
+  it('renders a resize handle only on columns with resize: true', () => {
+    const resizeCols: ColumnDef<Row>[] = [
+      { key: 'id', title: 'ID', dataIndex: 'id', resize: true },
+      { key: 'name', title: 'Name', dataIndex: 'name' },
+    ]
+    render(<DataTable rowKey="id" columns={resizeCols} dataSource={rows} />)
+    // Only the 'id' column opts in → exactly one handle (last non-pinned col 'name' is auto-fill).
+    expect(document.querySelectorAll('[data-slot="column-resize-handle"]')).toHaveLength(1)
+  })
+
+  it('uses fixed table layout only when a column is resizable', () => {
+    const { rerender } = render(<DataTable rowKey="id" columns={cols} dataSource={rows} />)
+    expect(document.querySelector('table')?.className).not.toMatch(/table-fixed/)
+
+    rerender(
+      <DataTable
+        rowKey="id"
+        columns={[{ key: 'id', title: 'ID', dataIndex: 'id', resize: true }, ...cols.slice(1)]}
+        dataSource={rows}
+      />,
+    )
+    expect(document.querySelector('table')?.className).toMatch(/table-fixed/)
+  })
+
+  it('renders no resize handle when no column opts in', () => {
+    render(<DataTable rowKey="id" columns={cols} dataSource={rows} />)
+    expect(document.querySelectorAll('[data-slot="column-resize-handle"]')).toHaveLength(0)
+  })
+})

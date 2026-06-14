@@ -63,6 +63,12 @@ export interface ColumnDef<T> {
    * Default: `true`.
    */
   enableHiding?: boolean
+  /**
+   * Allow the user to drag the column's right edge to resize it.
+   * Resize machinery (fixed table layout + drag handles) only activates when
+   * at least one column opts in. Default: `false`.
+   */
+  resize?: boolean
 }
 
 /** Server-driven pagination descriptor. */

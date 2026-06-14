@@ -16,6 +16,8 @@ import {
   type PaginationState,
   type ColumnPinningState,
   type VisibilityState,
+  type ColumnSizingState,
+  type ColumnSizingInfoState,
 } from '@tanstack/react-table'
 import { useState, useMemo } from 'react'
 import type { DataTableProps } from '../data-table.types'
@@ -26,6 +28,8 @@ interface TableEngineResult<T> {
   table: Table<T>
   /** Current page rows (for footer renderer). */
   currentPageRows: T[]
+  /** True when at least one column opted into resize — activates fixed layout + handles. */
+  resizeEnabled: boolean
 }
 
 export function useTableEngine<T extends object>(
@@ -73,6 +77,18 @@ export function useTableEngine<T extends object>(
   }, [columns, menuEnabled])
 
   const [columnPinning, setColumnPinning] = useState<ColumnPinningState>(initialPinning)
+
+  // ── column resize (opt-in per column via `resize: true`) ─────────────────
+  const resizeEnabled = useMemo(() => columns.some((c) => c.resize), [columns])
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({})
+  const [columnSizingInfo, setColumnSizingInfo] = useState<ColumnSizingInfoState>({
+    startOffset: null,
+    startSize: null,
+    deltaOffset: null,
+    deltaPercentage: null,
+    isResizingColumn: false,
+    columnSizingStart: [],
+  })
 
   // ── column order (opt-in) ────────────────────────────────────────────────
   // Seeded once from the facade column keys. Two constraints when `reorder` is
@@ -139,6 +155,7 @@ export function useTableEngine<T extends object>(
       expanded,
       pagination: controlledPagination,
       ...(menuEnabled && { columnPinning, columnOrder, columnVisibility }),
+      ...(resizeEnabled && { columnSizing, columnSizingInfo }),
     },
 
     // Row selection
@@ -185,6 +202,14 @@ export function useTableEngine<T extends object>(
       onColumnVisibilityChange: setColumnVisibility,
     }),
 
+    // Column resize (opt-in) — live width updates while dragging.
+    ...(resizeEnabled && {
+      columnResizeMode: 'onChange' as const,
+      enableColumnResizing: true,
+      onColumnSizingChange: setColumnSizing,
+      onColumnSizingInfoChange: setColumnSizingInfo,
+    }),
+
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -193,5 +218,5 @@ export function useTableEngine<T extends object>(
 
   const currentPageRows = table.getRowModel().rows.map((r) => r.original)
 
-  return { table, currentPageRows }
+  return { table, currentPageRows, resizeEnabled }
 }

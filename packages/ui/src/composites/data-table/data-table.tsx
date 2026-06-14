@@ -12,13 +12,18 @@ function isPaginationConfig(p: DataTableProps<unknown>['pagination']): p is Pagi
 }
 
 export function DataTable<T extends object>(props: DataTableProps<T>) {
-  const { table, currentPageRows } = useTableEngine(props)
+  const { table, currentPageRows, resizeEnabled } = useTableEngine(props)
   const pag = isPaginationConfig(props.pagination) ? props.pagination : null
   const bordered = props.bordered !== false
 
   const inner = (
     <>
-      <TableView table={table} props={props} currentPageRows={currentPageRows} />
+      <TableView
+        table={table}
+        props={props}
+        currentPageRows={currentPageRows}
+        resizeEnabled={resizeEnabled}
+      />
       {pag && (
         <PaginationBar
           current={pag.current}

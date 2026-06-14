@@ -84,6 +84,8 @@ interface ColumnHeaderMenuProps<T> {
   config: ResolvedColumnMenuConfig
   /** String title used for aria-label and trigger display. */
   title: string
+  /** Horizontal alignment of the header trigger, mirrors the column's cell align. */
+  align?: 'left' | 'center' | 'right'
 }
 
 export function ColumnHeaderMenu<T>({
@@ -91,6 +93,7 @@ export function ColumnHeaderMenu<T>({
   table,
   config,
   title,
+  align = 'left',
 }: ColumnHeaderMenuProps<T>) {
   const [open, setOpen] = useState(false)
   // Prevent re-opening when click closes the menu (radix pattern).
@@ -112,7 +115,13 @@ export function ColumnHeaderMenu<T>({
     : []
 
   return (
-    <div className="inline-flex items-center gap-1 h-full w-full">
+    <div
+      className={cn(
+        'inline-flex items-center gap-1 h-full w-full',
+        align === 'right' && 'justify-end',
+        align === 'center' && 'justify-center',
+      )}
+    >
       <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
         <DropdownMenuTrigger
           asChild
