@@ -1,0 +1,11 @@
+import { chromium } from 'playwright'
+const b = await chromium.launch({ headless: true })
+const p = await (await b.newContext({ viewport:{width:1100,height:800} })).newPage()
+await p.goto('http://localhost:5173/profiles', { waitUntil:'networkidle' }); await p.waitForTimeout(900)
+const th = p.locator('th:has-text("Name")').first()
+const h = th.locator('[data-slot="column-resize-handle"]'); const box = await h.boundingBox()
+await p.mouse.move(box.x+3, box.y+box.height/2); await p.mouse.down()
+await p.mouse.move(box.x+600, box.y+box.height/2, { steps: 15 }); await p.mouse.up()
+await p.waitForTimeout(400)
+await p.screenshot({ path:'plans/reports/scroll-fix-full.png' })
+await b.close(); console.log('done')
