@@ -12,6 +12,15 @@ export interface RevenuePoint {
   target: number
 }
 
+export type BreakdownTone = 'success' | 'warning' | 'error' | 'info' | 'accent' | 'neutral'
+
+export interface BreakdownItem {
+  key: string
+  label: string
+  value: number
+  tone: BreakdownTone
+}
+
 export const STAT_FIXTURES: StatCard[] = [
   { id: 'users', label: 'Total Users', value: 1284, trend: 12 },
   { id: 'revenue', label: 'Monthly Revenue', value: 48250, unit: '$', trend: 8 },
@@ -26,4 +35,12 @@ export const REVENUE_FIXTURES: RevenuePoint[] = [
   { month: 'Apr', revenue: 37000, target: 40000 },
   { month: 'May', revenue: 44000, target: 42000 },
   { month: 'Jun', revenue: 48250, target: 45000 },
+]
+
+export const BREAKDOWN_FIXTURES: BreakdownItem[] = [
+  { key: 'profiles_live',      label: 'Profiles · Live',      value: 940,  tone: 'success' },
+  { key: 'profiles_stale',     label: 'Profiles · Stale',     value: 112,  tone: 'warning' },
+  { key: 'profiles_die',       label: 'Profiles · Dead',      value: 45,   tone: 'error'   },
+  { key: 'profiles_suspended', label: 'Profiles · Suspended', value: 28,   tone: 'accent'  },
+  { key: 'profiles_pending',   label: 'Profiles · Pending',   value: 159,  tone: 'info'    },
 ]

@@ -6,7 +6,6 @@ import { MENU_ITEMS, getActiveKey, getMenuTitle } from '@/config/menu'
 import { DashboardScreen } from '@/screens/dashboard/dashboard-screen'
 import { UsersScreen } from '@/screens/users/users-screen'
 import { ProfilesScreen } from '@/screens/profiles/profiles-screen'
-import { FormDrawerScreen } from '@/screens/form-drawer/form-drawer-screen'
 import { SettingsScreen } from '@/screens/settings/settings-screen'
 import { LoginScreen } from '@/screens/login/login-screen'
 
@@ -38,7 +37,6 @@ function AppLayout() {
         <Route path="/dashboard" element={<DashboardScreen />} />
         <Route path="/users" element={<UsersScreen />} />
         <Route path="/profiles" element={<ProfilesScreen />} />
-        <Route path="/crud" element={<FormDrawerScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
         <Route path="/login" element={<LoginScreen />} />
       </Routes>

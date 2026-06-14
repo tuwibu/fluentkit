@@ -6,11 +6,15 @@ export interface ProfileRecord {
   groupTone: 'purple' | 'orange' | 'blue' | 'green' | 'red' | 'cyan'
   platform: 'google' | 'facebook' | 'twitter'
   status: 'live' | 'die' | 'login_failed' | 'pending'
+  country: string
   proxyType: 'inline' | 'direct'
   proxy?: string
   tags: string[]
   lastF?: string
+  deleted: boolean
 }
+
+const COUNTRIES = ['us', 'vn', 'jp', 'gb', 'de'] as const
 
 const GROUPS = [
   { name: 'Mail', tone: 'purple' },
@@ -54,6 +58,8 @@ export const PROFILE_FIXTURES: ProfileRecord[] = Array.from({ length: 35 }, (_, 
       ? undefined
       : `${((i * 7) % 23) + 1}h ago`
 
+  const country = COUNTRIES[i % COUNTRIES.length] as string
+
   return {
     id: `profile-${i + 1}`,
     name,
@@ -62,9 +68,11 @@ export const PROFILE_FIXTURES: ProfileRecord[] = Array.from({ length: 35 }, (_, 
     groupTone: group.tone,
     platform,
     status,
+    country,
     proxyType: isInline ? 'inline' : 'direct',
     proxy: isInline ? proxyStr(i + 1) : undefined,
     tags: i % 4 === 0 ? ['vip', 'seed'] : i % 3 === 0 ? ['warmup'] : [],
     lastF,
+    deleted: i % 6 === 5,
   }
 })

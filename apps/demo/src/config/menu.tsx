@@ -59,7 +59,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
-    key: '/crud',
+    key: '/users',
     label: 'Users',
     icon: <Users {...ICON} />,
     tip: 'Users',
