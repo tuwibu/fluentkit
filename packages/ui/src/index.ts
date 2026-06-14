@@ -17,6 +17,7 @@ export type { PlaceholderProps } from './placeholder'
 export { cn } from './lib/cn'
 export { cx } from './lib/cx'
 export { getTagColor } from './lib/tag-color'
+export { useIsMobile } from './lib/use-is-mobile'
 
 // Primitives — non-interactive
 export { Label } from './primitives/label'
@@ -31,7 +32,7 @@ export {
 } from './primitives/card'
 export { Badge, badgeVariants } from './primitives/badge'
 export { Tag } from './primitives/tag'
-export type { TagProps, TagVariant } from './primitives/tag'
+export type { TagProps, TagVariant, TagSize } from './primitives/tag'
 export { Separator } from './primitives/separator'
 export { Skeleton } from './primitives/skeleton'
 

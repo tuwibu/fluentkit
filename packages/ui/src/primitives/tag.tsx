@@ -4,10 +4,14 @@ import { cn } from '../lib/cn'
 
 export type TagVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral' | 'accent'
 
+export type TagSize = 'sm' | 'md' | 'lg'
+
 export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
   variant?: TagVariant
   color?: string
   bullet?: boolean
+  /** Pill size. Controls text size + padding + bullet dot. Default: 'md'. */
+  size?: TagSize
   onRemove?: () => void
   truncate?: boolean
   className?: string
@@ -23,10 +27,25 @@ const VARIANT_CLS: Record<TagVariant, string> = {
   accent: 'bg-primary/10 text-primary border-primary/30',
 }
 
+// Size scale: text token + padding + inter-item gap. `md` mirrors the original
+// fixed sizing so existing usages render identically without passing `size`.
+const SIZE_CLS: Record<TagSize, string> = {
+  sm: 'text-micro gap-1 py-[1px] px-[6px]',
+  md: 'text-caption gap-[5px] py-[2px] px-[7px]',
+  lg: 'text-body gap-1.5 py-0.5 px-2.5',
+}
+
+const DOT_SIZE: Record<TagSize, string> = {
+  sm: 'w-1 h-1',
+  md: 'w-1.5 h-1.5',
+  lg: 'w-2 h-2',
+}
+
 export function Tag({
   variant,
   color,
   bullet,
+  size = 'md',
   onRemove,
   truncate,
   className,
@@ -51,9 +70,8 @@ export function Tag({
     <span
       {...rest}
       className={cn(
-        'inline-flex items-center gap-[5px] whitespace-nowrap border',
-        'text-caption font-medium leading-snug',
-        'py-[2px] px-[7px] rounded-[4px]',
+        'inline-flex items-center whitespace-nowrap border font-medium leading-snug rounded-[4px]',
+        SIZE_CLS[size],
         truncate && 'max-w-[80px] overflow-hidden text-ellipsis',
         variant && !useColorMix && VARIANT_CLS[variant],
         !hasAnyColor && !variant &&
@@ -64,7 +82,7 @@ export function Tag({
     >
       {bullet && (
         <span
-          className="w-1.5 h-1.5 rounded-full shrink-0 bg-current opacity-70"
+          className={cn('rounded-full shrink-0 bg-current opacity-70', DOT_SIZE[size])}
           aria-hidden="true"
         />
       )}

@@ -5,8 +5,9 @@
  */
 import * as React from 'react'
 import { Popover as PopoverPrimitive } from 'radix-ui'
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, Search } from 'lucide-react'
 import { Checkbox } from '../../../primitives/checkbox'
+import { cn } from '../../../lib/cn'
 import type { SelectOption } from '../select.types'
 import { OptionChip } from './option-chip'
 
@@ -20,6 +21,7 @@ interface MultiSearchSelectProps<V> {
   allowClear?: boolean
   placeholder?: string
   disabled?: boolean
+  block?: boolean
 }
 
 function getOptLabel<V>(opt: SelectOption<V>): string {
@@ -43,6 +45,7 @@ export function MultiSearchSelect<V = string>({
   allowClear = false,
   placeholder,
   disabled = false,
+  block = false,
 }: MultiSearchSelectProps<V>) {
   const isMultiple = mode === 'multiple'
   const [open, setOpen] = React.useState(false)
@@ -105,7 +108,11 @@ export function MultiSearchSelect<V = string>({
         setOpen(val)
       }}
     >
-      <div data-slot="select-composite" data-loading={loading || undefined} className="relative inline-flex items-center gap-1">
+      <div
+        data-slot="select-composite"
+        data-loading={loading || undefined}
+        className={cn('relative items-center gap-1', block ? 'flex w-full' : 'inline-flex')}
+      >
         <PopoverPrimitive.Trigger asChild>
           <button
             type="button"
@@ -114,7 +121,10 @@ export function MultiSearchSelect<V = string>({
             aria-busy={loading}
             aria-haspopup="listbox"
             aria-expanded={open}
-            className="flex h-8 w-fit items-center justify-between gap-2 rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-3 py-2 text-body text-foreground whitespace-nowrap transition-all duration-100 outline-none hover:bg-[var(--win11-control-hover)] focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:text-white"
+            className={cn(
+              'flex h-8 items-center justify-between gap-2 rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-3 py-2 text-body text-foreground whitespace-nowrap transition-all duration-100 outline-none cursor-pointer hover:bg-[var(--win11-control-hover)] focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:text-white',
+              block ? 'w-full flex-1' : 'w-fit',
+            )}
           >
             <span data-slot="select-value" className="line-clamp-1 flex items-center gap-2 data-[placeholder]:text-muted-foreground">
               {(() => {
@@ -148,23 +158,30 @@ export function MultiSearchSelect<V = string>({
             align="start"
             sideOffset={4}
             onCloseAutoFocus={(e) => e.preventDefault()}
-            className="relative z-50 min-w-[8rem] overflow-hidden rounded-lg border border-[var(--win11-card-border)] bg-[var(--win11-card-bg-solid)] p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.14)] text-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 dark:shadow-[0_8px_32px_rgba(0,0,0,0.36)]"
+            className={cn(
+              'relative z-50 min-w-[8rem] overflow-hidden rounded-lg border border-[var(--win11-card-border)] bg-[var(--win11-card-bg-solid)] p-0 shadow-[0_8px_32px_rgba(0,0,0,0.14)] text-foreground data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 dark:shadow-[0_8px_32px_rgba(0,0,0,0.36)]',
+              block && 'w-[var(--radix-popover-trigger-width)]',
+            )}
           >
+            {/* Search section — mirrors FilterSelect: padded box + bottom divider */}
             {showSearch && (
-              <div className="px-1 pb-1.5">
-                <input
-                  type="text"
-                  data-slot="select-search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  aria-label="Search options"
-                  autoFocus
-                  className="h-7 w-full rounded-[4px] border border-[var(--win11-control-border)] bg-[var(--win11-control-bg)] px-2 text-body text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
-                />
+              <div className="p-2 border-b border-[var(--win11-control-border)]">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    data-slot="select-search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                    aria-label="Search options"
+                    autoFocus
+                    className="w-full h-8 pl-8 pr-3 text-body rounded-[4px] bg-[var(--win11-control-bg)] border-0 outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground"
+                  />
+                </div>
               </div>
             )}
-            <div role="listbox" aria-multiselectable={isMultiple}>
+            <div role="listbox" aria-multiselectable={isMultiple} className="p-1.5">
               {filteredOptions.map((opt) => (
                 <div
                   key={String(opt.value)}
@@ -177,7 +194,7 @@ export function MultiSearchSelect<V = string>({
                     if (e.key === 'Enter' || e.key === ' ') handleToggle(opt.value, opt.disabled)
                   }}
                   tabIndex={opt.disabled ? -1 : 0}
-                  className="relative flex w-full cursor-default items-center gap-2 rounded-[4px] px-3 py-2 text-body text-foreground outline-none select-none transition-colors duration-75 hover:bg-[var(--win11-control-hover)] focus:bg-[var(--win11-control-hover)] aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-selected:font-medium"
+                  className="relative flex w-full cursor-pointer items-center gap-2 rounded-[4px] px-3 py-2 text-body text-foreground outline-none select-none transition-colors duration-75 hover:bg-[var(--win11-control-hover)] focus:bg-[var(--win11-control-hover)] aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-selected:font-medium"
                 >
                   {isMultiple && (
                     <Checkbox

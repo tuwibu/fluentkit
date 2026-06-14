@@ -40,7 +40,7 @@ function SelectTrigger({
       onPointerUp={() => setIsPressed(false)}
       onPointerLeave={() => setIsPressed(false)}
       className={cn(
-        'flex w-fit items-center justify-between gap-2 rounded-[4px] px-3 py-2 text-body whitespace-nowrap transition-all duration-100 outline-none',
+        'flex w-fit items-center justify-between gap-2 rounded-[4px] px-3 py-2 text-body whitespace-nowrap transition-all duration-100 outline-none cursor-pointer',
         'bg-[var(--win11-control-bg)] border border-[var(--win11-control-border)] text-foreground',
         'dark:text-white',
         'hover:bg-[var(--win11-control-hover)]',
@@ -132,7 +132,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex w-full cursor-default items-center rounded-[4px] py-2 pr-3 pl-6 text-body outline-hidden select-none transition-colors duration-75',
+        'relative flex w-full cursor-pointer items-center rounded-[4px] py-2 pr-3 pl-6 text-body outline-hidden select-none transition-colors duration-75',
         'hover:bg-[var(--win11-control-hover)]',
         'focus:bg-[var(--win11-control-hover)]',
         'text-foreground',

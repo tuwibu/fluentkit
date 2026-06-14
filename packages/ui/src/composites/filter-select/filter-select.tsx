@@ -100,7 +100,7 @@ export function FilterSelect<V = string>({
   // would also be nested inside a <button> — use <div role="button"> for both cases.
   const useDivTrigger = (triggerDisplay === 'tags' && hasSelection) || (allowClear && hasSelection)
   const triggerCls = cn(
-    'inline-flex h-8 items-center gap-1.5 rounded-md border px-3 py-1 text-body font-medium min-w-0',
+    'inline-flex h-8 items-center gap-1.5 rounded-md border px-3 py-1 text-body font-medium min-w-0 cursor-pointer',
     'bg-[var(--win11-control-bg)] border-[var(--win11-control-border)] text-foreground',
     'transition-all duration-100',
     'hover:bg-[var(--win11-control-hover)]',
@@ -281,7 +281,7 @@ export function FilterSelect<V = string>({
                     aria-disabled={opt.disabled}
                     tabIndex={opt.disabled ? -1 : 0}
                     className={cn(
-                      'w-full flex items-center gap-2 min-h-[34px] px-2 py-1.5 rounded-[4px] text-body text-left transition-colors cursor-default select-none',
+                      'w-full flex items-center gap-2 min-h-[34px] px-2 py-1.5 rounded-[4px] text-body text-left transition-colors cursor-pointer select-none',
                       'hover:bg-[var(--win11-control-hover)]',
                       opt.disabled && 'pointer-events-none opacity-50',
                       checked && 'bg-primary/5',

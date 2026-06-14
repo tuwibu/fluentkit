@@ -54,4 +54,9 @@ export interface SelectProps<V = string> {
   placeholder?: string
   /** Disables interaction and applies muted styling. Default: false. */
   disabled?: boolean
+  /**
+   * Stretches the select to fill its container width (100%) instead of sizing
+   * to content. Mirrors antd's `<Select>` block behavior. Default: false.
+   */
+  block?: boolean
 }

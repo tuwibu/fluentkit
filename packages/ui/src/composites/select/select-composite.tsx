@@ -1,4 +1,5 @@
 import type { SelectProps } from './select.types'
+import { cn } from '../../lib/cn'
 import { MultiSearchSelect } from './internal/multi-search-select'
 import { OptionChip } from './internal/option-chip'
 import {
@@ -25,6 +26,7 @@ export function SelectComposite<V = string>({
   allowClear = false,
   placeholder,
   disabled = false,
+  block = false,
 }: SelectProps<V>) {
   const isMultiple = mode === 'multiple'
 
@@ -41,6 +43,7 @@ export function SelectComposite<V = string>({
         allowClear={allowClear}
         placeholder={placeholder}
         disabled={disabled}
+        block={block}
       />
     )
   }
@@ -64,13 +67,17 @@ export function SelectComposite<V = string>({
   }
 
   return (
-    <div data-slot="select-composite" data-loading={loading || undefined} className="relative inline-flex items-center gap-1">
+    <div
+      data-slot="select-composite"
+      data-loading={loading || undefined}
+      className={cn('relative items-center gap-1', block ? 'flex w-full' : 'inline-flex')}
+    >
       <Select
         value={singleValue ?? ''}
         onValueChange={handleValueChange}
         disabled={disabled || loading}
       >
-        <SelectTrigger aria-busy={loading}>
+        <SelectTrigger aria-busy={loading} className={cn(block && 'w-full flex-1')}>
           {selectedHasMeta ? (
             <>
               {/* Radix needs SelectValue to broadcast the trigger's accessible
