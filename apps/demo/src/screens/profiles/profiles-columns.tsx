@@ -1,13 +1,8 @@
 import type { ColumnDef } from '@fluent-kit/ui'
-import { Tag } from '@fluent-kit/ui'
+import { Tag, IconButton, Avatar } from '@fluent-kit/ui'
 import { Play, Pencil, Trash2, Globe } from 'lucide-react'
-import { Avatar } from '@/components/avatar'
 import { StatusPill } from '@/components/status-pill'
 import type { ProfileRecord } from '@/mocks/fixtures/profiles.fixtures'
-
-// Win11 icon-button style for row actions (matches multiprofile-v2 ICON_BTN)
-const ICON_BTN =
-  'inline-flex items-center justify-center w-7 h-7 rounded-[4px] text-muted-foreground cursor-pointer transition-[background,color] duration-[120ms] hover:bg-[var(--win11-control-hover)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed'
 
 // Map groupTone → CSS color for Tag `color` prop
 const GROUP_TONE_COLOR: Record<ProfileRecord['groupTone'], string> = {
@@ -44,6 +39,7 @@ export function createProfilesColumns(
     title: 'Group',
     dataIndex: 'group',
     width: 120,
+    sorter: true,
     render: (_value: string, record: ProfileRecord) => (
       <Tag color={GROUP_TONE_COLOR[record.groupTone]}>{record.group}</Tag>
     ),
@@ -53,6 +49,7 @@ export function createProfilesColumns(
     title: 'Name',
     dataIndex: 'name',
     width: 200,
+    sorter: true,
     render: (_value: string, record: ProfileRecord) => (
       <div className="flex items-center gap-2 min-w-0">
         <Avatar name={record.name} size="sm" />
@@ -149,40 +146,38 @@ export function createProfilesColumns(
     align: 'right',
     render: (_value: unknown, record: ProfileRecord) => (
       <div className="flex items-center gap-1.5 justify-end">
-        <button
-          type="button"
-          className={ICON_BTN}
+        <IconButton
+          size="sm"
+          icon={<Play size={13} className="fill-current" />}
           aria-label={`Run ${record.name}`}
+          tooltip="Run"
           onClick={(e) => {
             e.stopPropagation()
             console.log('run', record.id)
           }}
-        >
-          <Play size={13} className="fill-current" />
-        </button>
-        <button
-          type="button"
-          className={ICON_BTN}
+        />
+        <IconButton
+          size="sm"
+          icon={<Pencil size={13} />}
           aria-label={`Edit ${record.name}`}
+          tooltip="Edit"
           onClick={(e) => {
             e.stopPropagation()
             if (onView) onView(record)
             else console.log('edit', record.id)
           }}
-        >
-          <Pencil size={13} />
-        </button>
-        <button
-          type="button"
-          className={`${ICON_BTN} text-destructive hover:text-destructive hover:bg-destructive/10`}
+        />
+        <IconButton
+          variant="danger"
+          size="sm"
+          icon={<Trash2 size={13} />}
           aria-label={`Delete ${record.name}`}
+          tooltip="Delete"
           onClick={(e) => {
             e.stopPropagation()
             onDelete(record)
           }}
-        >
-          <Trash2 size={13} />
-        </button>
+        />
       </div>
     ),
   },

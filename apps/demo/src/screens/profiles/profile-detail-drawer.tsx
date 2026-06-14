@@ -7,9 +7,8 @@ import {
   DetailDrawer,
   Tabs, TabsList, TabsTrigger, TabsContent,
   DrawerSection, DrawerInfoRow,
-  Tag,
+  Tag, IconButton, Avatar,
 } from '@fluent-kit/ui'
-import { Avatar } from '@/components/avatar'
 import { StatusPill } from '@/components/status-pill'
 import { TotpDisplay } from './internal/totp-display'
 import { AccountRawJson } from './internal/account-raw-json'
@@ -90,22 +89,22 @@ function DrawerHeader({ record }: { record: ProfileRecord }) {
       </div>
 
       <div className="flex items-center gap-1.5 shrink-0 self-start pt-0.5">
-        <button
-          type="button"
-          className="w-8 h-8 rounded-md grid place-items-center bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer transition-colors duration-[120ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        <IconButton
+          variant="launch"
+          size="md"
+          icon={<Play size={14} className="fill-current" />}
           aria-label={`Launch ${record.name}`}
+          tooltip="Launch"
           onClick={() => console.log('launch', record.id)}
-        >
-          <Play size={14} className="fill-current" />
-        </button>
-        <button
-          type="button"
-          className="w-8 h-8 rounded-md grid place-items-center bg-[var(--win11-control-bg)] border border-[var(--win11-control-border)] text-muted-foreground hover:bg-[var(--win11-control-hover)] cursor-pointer transition-colors duration-[120ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        />
+        <IconButton
+          variant="default"
+          size="md"
+          icon={<Edit3 size={14} />}
           aria-label={`Edit ${record.name}`}
+          tooltip="Edit"
           onClick={() => console.log('edit', record.id)}
-        >
-          <Edit3 size={14} />
-        </button>
+        />
       </div>
     </div>
   )

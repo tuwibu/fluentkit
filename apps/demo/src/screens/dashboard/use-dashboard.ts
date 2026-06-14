@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { apiGet } from '@/lib/api-client'
-import type { StatCard, RevenuePoint } from '@/mocks/fixtures/dashboard.fixtures'
+import type { StatCard, RevenuePoint, BreakdownItem } from '@/mocks/fixtures/dashboard.fixtures'
 
 export function useDashboard() {
   const statsQuery = useQuery<StatCard[]>({
@@ -13,5 +13,10 @@ export function useDashboard() {
     queryFn: () => apiGet<RevenuePoint[]>('/api/dashboard/revenue'),
   })
 
-  return { statsQuery, revenueQuery }
+  const breakdownQuery = useQuery<BreakdownItem[]>({
+    queryKey: ['dashboard', 'breakdown'],
+    queryFn: () => apiGet<BreakdownItem[]>('/api/dashboard/breakdown'),
+  })
+
+  return { statsQuery, revenueQuery, breakdownQuery }
 }

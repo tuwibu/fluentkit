@@ -75,6 +75,7 @@ export function ProfilesScreen() {
             })}
             scroll={{ x: 980 }}
             emptyText="No profiles found."
+            columnMenu={{ sort: true, pin: true, reorder: true, hide: true }}
           />
         </div>
 

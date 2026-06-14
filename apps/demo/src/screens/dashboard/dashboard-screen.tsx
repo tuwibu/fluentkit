@@ -3,7 +3,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Skeleton,
+  StatCard,
+  StatCardSkeleton,
 } from '@fluent-kit/ui'
 import {
   LineChart,
@@ -16,9 +17,14 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useDashboard } from './use-dashboard'
+import type { StatCardTone } from '@fluent-kit/ui'
+
+function trendToTone(trend: number): StatCardTone {
+  return trend >= 0 ? 'success' : 'error'
+}
 
 export function DashboardScreen() {
-  const { statsQuery, revenueQuery } = useDashboard()
+  const { statsQuery, revenueQuery, breakdownQuery } = useDashboard()
 
   return (
     <div className="p-6">
@@ -29,49 +35,64 @@ export function DashboardScreen() {
           Failed to load dashboard stats.
         </div>
       )}
+      {breakdownQuery.isError && (
+        <div role="alert" className="mb-4 rounded-md bg-destructive/10 p-4 text-destructive">
+          Failed to load breakdown data.
+        </div>
+      )}
+      {revenueQuery.isError && (
+        <div role="alert" className="mb-4 rounded-md bg-destructive/10 p-4 text-destructive">
+          Failed to load revenue data.
+        </div>
+      )}
 
-      <div className="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-4">
+      {/* KPI row */}
+      <div className="grid grid-cols-2 gap-3 mb-6 sm:grid-cols-4">
         {statsQuery.isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardHeader>
-                  <Skeleton className="h-4 w-24" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-8 w-16" />
-                </CardContent>
-              </Card>
+              <StatCardSkeleton key={i} variant="kpi" />
             ))
           : (statsQuery.data ?? []).map((stat) => (
-              <Card key={stat.id}>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.label}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">
-                    {stat.unit === '$' ? `$${stat.value.toLocaleString()}` : stat.value}
-                    {stat.unit && stat.unit !== '$' ? stat.unit : ''}
-                  </p>
-                  <p
-                    className={`text-xs mt-1 ${stat.trend >= 0 ? 'text-green-600' : 'text-red-500'}`}
-                    aria-label={`Trend: ${stat.trend > 0 ? '+' : ''}${stat.trend}%`}
-                  >
-                    {stat.trend > 0 ? '▲' : '▼'} {Math.abs(stat.trend)}%
-                  </p>
-                </CardContent>
-              </Card>
+              <StatCard
+                key={stat.id}
+                label={stat.label}
+                value={stat.value}
+                variant="kpi"
+                tone={trendToTone(stat.trend)}
+                delta={{
+                  value: Math.abs(stat.trend),
+                  dir: stat.trend >= 0 ? 'up' : 'down',
+                }}
+                hint={stat.unit ? stat.unit : undefined}
+              />
             ))}
       </div>
 
+      {/* Breakdown compact row */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {breakdownQuery.isLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <StatCardSkeleton key={i} variant="compact" />
+            ))
+          : (breakdownQuery.data ?? []).map((item) => (
+              <StatCard
+                key={item.key}
+                label={item.label}
+                value={item.value}
+                variant="compact"
+                tone={item.tone}
+              />
+            ))}
+      </div>
+
+      {/* Revenue line chart */}
       <Card>
         <CardHeader>
           <CardTitle>Revenue vs Target</CardTitle>
         </CardHeader>
         <CardContent className="h-64">
           {revenueQuery.isLoading ? (
-            <Skeleton className="h-full w-full" />
+            <div className="h-full w-full animate-pulse rounded-md bg-foreground/10" />
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={revenueQuery.data ?? []}>

@@ -10,10 +10,8 @@ describe('DashboardScreen', () => {
     const { Wrapper } = createTestWrapper()
     render(<DashboardScreen />, { wrapper: Wrapper })
 
-    // Loading skeletons present initially
     expect(screen.getByText('Dashboard')).toBeInTheDocument()
 
-    // Wait for stat data
     await waitFor(() => {
       expect(screen.getByText('Total Users')).toBeInTheDocument()
     })
@@ -32,5 +30,44 @@ describe('DashboardScreen', () => {
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument()
     })
+  })
+
+  it('shows error alert when breakdown endpoint fails', async () => {
+    server.use(
+      http.get('/api/dashboard/breakdown', () =>
+        HttpResponse.json({ success: false, message: 'Breakdown unavailable' }, { status: 500 }),
+      ),
+    )
+    const { Wrapper } = createTestWrapper()
+    render(<DashboardScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load breakdown data.')).toBeInTheDocument()
+    })
+  })
+
+  it('shows error alert when revenue endpoint fails', async () => {
+    server.use(
+      http.get('/api/dashboard/revenue', () =>
+        HttpResponse.json({ success: false, message: 'Revenue unavailable' }, { status: 500 }),
+      ),
+    )
+    const { Wrapper } = createTestWrapper()
+    render(<DashboardScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load revenue data.')).toBeInTheDocument()
+    })
+  })
+
+  it('renders breakdown compact cards after loading', async () => {
+    const { Wrapper } = createTestWrapper()
+    render(<DashboardScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Profiles · Live')).toBeInTheDocument()
+    })
+    expect(screen.getByText('Profiles · Stale')).toBeInTheDocument()
+    expect(screen.getByText('Profiles · Dead')).toBeInTheDocument()
   })
 })

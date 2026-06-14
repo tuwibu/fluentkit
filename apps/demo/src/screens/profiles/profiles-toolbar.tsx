@@ -1,39 +1,14 @@
-import { Button, Input, Select } from '@fluent-kit/ui'
+import { useId } from 'react'
+import { Button, FilterSelect, Input, Select, IconButton, Switch, Label } from '@fluent-kit/ui'
 import { RefreshCw, Columns3, Search, Plus } from 'lucide-react'
 import type { ProfileFilters } from './use-profiles'
-import { PROFILE_FIXTURES } from '@/mocks/fixtures/profiles.fixtures'
-
-// Sentinel used for "All" options — Radix Select.Item forbids empty string value
-const ALL = '__all__'
-
-// Map sentinel back to empty string (= no filter)
-function filterVal(v: string): string {
-  return v === ALL ? '' : v
-}
-
-// Derive unique groups from fixture data for the group filter
-const GROUP_OPTIONS = [
-  { label: 'All Groups', value: ALL },
-  ...Array.from(new Set(PROFILE_FIXTURES.map((p) => p.group))).map((g) => ({
-    label: g,
-    value: g,
-  })),
-]
-
-const PLATFORM_OPTIONS = [
-  { label: 'All Platforms', value: ALL },
-  { label: 'Google', value: 'google' },
-  { label: 'Facebook', value: 'facebook' },
-  { label: 'Twitter', value: 'twitter' },
-]
-
-const STATUS_OPTIONS = [
-  { label: 'All Status', value: ALL },
-  { label: 'Live', value: 'live' },
-  { label: 'Die', value: 'die' },
-  { label: 'Login Failed', value: 'login_failed' },
-  { label: 'Pending', value: 'pending' },
-]
+import {
+  PLATFORM_OPTIONS,
+  STATUS_OPTIONS,
+  COUNTRY_OPTIONS,
+  SORT_OPTIONS,
+  TAG_OPTIONS,
+} from './profile-filter-presets'
 
 interface ProfilesToolbarProps {
   filters: ProfileFilters
@@ -48,29 +23,26 @@ export function ProfilesToolbar({
   onRefresh,
   onNewProfile,
 }: ProfilesToolbarProps) {
+  const deletedId = useId()
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {/* Left: icon actions — bordered win11 control buttons */}
-      <div className="flex items-center gap-0.5">
-        <Button
-          variant="outline"
-          size="icon-sm"
-          className="rounded-[4px] text-muted-foreground"
+      {/* Left: icon actions */}
+      <div className="flex items-center gap-1">
+        <IconButton
+          variant="outlined"
+          size="sm"
+          icon={<RefreshCw size={14} />}
           aria-label="Refresh profiles"
+          tooltip="Refresh"
           onClick={onRefresh}
-        >
-          <RefreshCw size={14} />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="icon-sm"
-          className="rounded-[4px] text-muted-foreground"
+        />
+        <IconButton
+          variant="outlined"
+          size="sm"
+          icon={<Columns3 size={14} />}
           aria-label="Toggle columns"
-          title="Column visibility"
-        >
-          <Columns3 size={14} />
-        </Button>
+          tooltip="Column visibility"
+        />
       </div>
 
       {/* Search */}
@@ -84,39 +56,79 @@ export function ProfilesToolbar({
         />
       </div>
 
-      {/* Separator between search and filters */}
+      {/* Separator */}
       <div className="w-px h-6 self-center bg-[var(--win11-card-border)] shrink-0" aria-hidden />
 
-      {/* Filters */}
-      <div className="w-32">
+      {/* 1. Platform — FilterSelect single + icon brand */}
+      <FilterSelect
+        title="Platform"
+        options={PLATFORM_OPTIONS}
+        value={filters.platform || undefined}
+        onChange={(v) => onFilterChange({ platform: (v as string) ?? '' })}
+        mode="single"
+        allLabel="All Platforms"
+        allowClear
+      />
+
+      {/* 2. Status — FilterSelect single + color chip */}
+      <FilterSelect
+        title="Status"
+        options={STATUS_OPTIONS}
+        value={filters.status || undefined}
+        onChange={(v) => onFilterChange({ status: (v as string) ?? '' })}
+        mode="single"
+        allLabel="All Status"
+        allowClear
+      />
+
+      {/* 3. Country — FilterSelect multiple + searchable + badge count */}
+      <FilterSelect
+        title="Country"
+        options={COUNTRY_OPTIONS}
+        value={filters.country}
+        onChange={(v) => onFilterChange({ country: (v as string[]) ?? [] })}
+        mode="multiple"
+        searchable
+        wide
+      />
+
+      {/* 4. Tags — FilterSelect multiple + searchable + tags display */}
+      <FilterSelect
+        title="Tags"
+        options={TAG_OPTIONS}
+        value={filters.tags}
+        onChange={(v) => onFilterChange({ tags: (v as string[]) ?? [] })}
+        mode="multiple"
+        searchable
+        triggerDisplay="tags"
+      />
+
+      {/* 5. Sort — Select single + search (loại 2) */}
+      <div className="w-40">
         <Select
-          options={PLATFORM_OPTIONS}
-          value={filters.platform || ALL}
-          onChange={(v) => onFilterChange({ platform: filterVal(v as string) })}
-          placeholder="Platform"
+          options={SORT_OPTIONS}
+          value={filters.sort || undefined}
+          onChange={(v) => onFilterChange({ sort: (v as string) ?? '' })}
+          showSearch
+          allowClear
+          placeholder="Sort by..."
         />
       </div>
 
-      <div className="w-32">
-        <Select
-          options={STATUS_OPTIONS}
-          value={filters.status || ALL}
-          onChange={(v) => onFilterChange({ status: filterVal(v as string) })}
-          placeholder="Status"
-        />
-      </div>
-
-      <div className="w-36">
-        <Select
-          options={GROUP_OPTIONS}
-          value={filters.group || ALL}
-          onChange={(v) => onFilterChange({ group: filterVal(v as string) })}
-          placeholder="Group"
-        />
-      </div>
-
-      {/* Spacer pushes New profile to the right */}
+      {/* Spacer */}
       <div className="flex-1" />
+
+      {/* Deleted / trash toggle */}
+      <div className="flex items-center gap-2 shrink-0">
+        <Switch
+          id={deletedId}
+          checked={filters.deleted}
+          onCheckedChange={(next) => onFilterChange({ deleted: next })}
+        />
+        <Label htmlFor={deletedId} className="text-body cursor-pointer">
+          Deleted
+        </Label>
+      </div>
 
       <Button variant="default" size="sm" onClick={onNewProfile}>
         <Plus size={14} className="mr-1" />

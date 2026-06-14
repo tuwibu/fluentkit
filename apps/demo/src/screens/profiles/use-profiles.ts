@@ -15,6 +15,10 @@ export interface ProfileFilters {
   status: string
   platform: string
   group: string
+  country: string[]
+  tags: string[]
+  sort: string
+  deleted: boolean
 }
 
 export function useProfiles() {
@@ -25,6 +29,10 @@ export function useProfiles() {
     status: '',
     platform: '',
     group: '',
+    country: [],
+    tags: [],
+    sort: '',
+    deleted: false,
   })
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
 
@@ -35,6 +43,10 @@ export function useProfiles() {
     ...(filters.status ? { status: filters.status } : {}),
     ...(filters.platform ? { platform: filters.platform } : {}),
     ...(filters.group ? { group: filters.group } : {}),
+    ...(filters.country.length > 0 ? { country: filters.country.join(',') } : {}),
+    ...(filters.tags.length > 0 ? { tags: filters.tags.join(',') } : {}),
+    ...(filters.sort ? { sort: filters.sort } : {}),
+    ...(filters.deleted ? { deleted: 'true' } : {}),
   })
 
   const query = useQuery<ProfilesListResponse>({

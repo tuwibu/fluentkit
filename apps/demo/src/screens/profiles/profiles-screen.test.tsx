@@ -95,7 +95,25 @@ describe('ProfilesScreen', () => {
     })
   })
 
-  it('sends status filter when Status select changes', async () => {
+  it('renders 5 filter controls in toolbar', async () => {
+    const { Wrapper } = createTestWrapper()
+    render(<ProfilesScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    // FilterSelect triggers render as popover-trigger buttons with their title text.
+    // Use getAllByRole because columnMenu also renders buttons in column headers.
+    expect(screen.getAllByRole('button', { name: /platform/i }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('button', { name: /status/i }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('button', { name: /country/i }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('button', { name: /tags/i }).length).toBeGreaterThanOrEqual(1)
+    // Sort: Select combobox
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+  })
+
+  it('sends platform filter when Platform FilterSelect changes', async () => {
     const requests: URL[] = []
     server.use(
       http.get('/api/profiles', ({ request }) => {
@@ -103,9 +121,9 @@ describe('ProfilesScreen', () => {
         requests.push(url)
         const page = Number(url.searchParams.get('page') ?? '1')
         const pageSize = Number(url.searchParams.get('pageSize') ?? '10')
-        const status = url.searchParams.get('status') ?? ''
+        const platform = url.searchParams.get('platform') ?? ''
         let filtered = PROFILE_FIXTURES
-        if (status) filtered = filtered.filter((p) => p.status === status)
+        if (platform) filtered = filtered.filter((p) => p.platform === platform)
         const data = filtered.slice((page - 1) * pageSize, page * pageSize)
         return HttpResponse.json({
           success: true,
@@ -124,19 +142,119 @@ describe('ProfilesScreen', () => {
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     })
 
-    // Find the Status combobox triggers — toolbar has platform, status, group (in that order)
-    const comboboxes = screen.getAllByRole('combobox')
-    // comboboxes[0]=platform, comboboxes[1]=status, comboboxes[2]=group, comboboxes[3]=footer page-size
-    const statusTrigger = comboboxes[1]
-    if (!statusTrigger) throw new Error('Status combobox not found')
-    await userEvent.click(statusTrigger)
+    // Open Platform FilterSelect popup
+    const platformBtn = screen.getByRole('button', { name: /^Platform/i })
+    await userEvent.click(platformBtn)
 
-    // Select "Live" option
-    const liveOption = await screen.findByRole('option', { name: /^Live$/i })
-    await userEvent.click(liveOption)
+    // Click "Google" option in the popup
+    const googleOption = await screen.findByRole('option', { name: /google/i })
+    await userEvent.click(googleOption)
 
     await waitFor(() => {
-      expect(requests.some((u) => u.searchParams.get('status') === 'live')).toBe(true)
+      expect(requests.some((u) => u.searchParams.get('platform') === 'google')).toBe(true)
+    })
+  })
+
+  it('sends country=us,vn when two countries selected', async () => {
+    const requests: URL[] = []
+    server.use(
+      http.get('/api/profiles', ({ request }) => {
+        const url = new URL(request.url)
+        requests.push(url)
+        const country = url.searchParams.get('country') ?? ''
+        let filtered = PROFILE_FIXTURES
+        if (country) {
+          const countryList = country.split(',').filter(Boolean)
+          filtered = filtered.filter((p) => countryList.includes(p.country))
+        }
+        const page = Number(url.searchParams.get('page') ?? '1')
+        const pageSize = Number(url.searchParams.get('pageSize') ?? '10')
+        const data = filtered.slice((page - 1) * pageSize, page * pageSize)
+        return HttpResponse.json({ success: true, data, total: filtered.length, current: page, pageSize })
+      }),
+    )
+
+    const { Wrapper } = createTestWrapper()
+    render(<ProfilesScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    // Open Country FilterSelect
+    const countryBtn = screen.getByRole('button', { name: /^Country/i })
+    await userEvent.click(countryBtn)
+
+    // Pick "United States"
+    const usOption = await screen.findByRole('option', { name: /united states/i })
+    await userEvent.click(usOption)
+
+    // Pick "Vietnam"
+    const vnOption = await screen.findByRole('option', { name: /vietnam/i })
+    await userEvent.click(vnOption)
+
+    await waitFor(() => {
+      const countryRequest = requests.find((u) => {
+        const c = u.searchParams.get('country') ?? ''
+        const parts = c.split(',').sort()
+        return parts.includes('us') && parts.includes('vn')
+      })
+      expect(countryRequest).toBeDefined()
+    })
+  })
+
+  it('MSW handler sorts by name_asc when sort param is set', async () => {
+    // Test MSW handler sort logic directly — radix Select single mode cannot
+    // be opened via click in jsdom (uses pointer events not supported there).
+    let sortedNames: string[] = []
+    server.use(
+      http.get('/api/profiles', ({ request }) => {
+        const url = new URL(request.url)
+        const sort = url.searchParams.get('sort') ?? ''
+        let filtered = [...PROFILE_FIXTURES]
+        if (sort === 'name_asc') {
+          filtered = filtered.sort((a, b) => a.name.localeCompare(b.name))
+        }
+        const data = filtered.slice(0, 10)
+        sortedNames = data.map((p) => p.name)
+        return HttpResponse.json({ success: true, data, total: filtered.length, current: 1, pageSize: 10 })
+      }),
+    )
+
+    const res = await fetch('/api/profiles?page=1&pageSize=10&sort=name_asc')
+    const json = await res.json() as { data: { name: string }[] }
+    const names = json.data.map((p) => p.name)
+    // Sorted ascending: each name should be <= the next
+    for (let i = 0; i < names.length - 1; i++) {
+      expect(names[i]!.localeCompare(names[i + 1]!)).toBeLessThanOrEqual(0)
+    }
+    expect(sortedNames.length).toBeGreaterThan(0)
+  })
+
+  it('shows tag chips in Tags FilterSelect trigger after selection', async () => {
+    const { Wrapper } = createTestWrapper()
+    render(<ProfilesScreen />, { wrapper: Wrapper })
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    // Open Tags FilterSelect
+    const tagsBtn = screen.getByRole('button', { name: /^Tags/i })
+    await userEvent.click(tagsBtn)
+
+    // Pick "vip" tag
+    const vipOption = await screen.findByRole('option', { name: /^vip$/i })
+    await userEvent.click(vipOption)
+
+    // After closing by clicking elsewhere, tag chip should appear in trigger
+    await userEvent.keyboard('{Escape}')
+
+    // The tag chip "vip" should now appear in the trigger area
+    await waitFor(() => {
+      // Tags trigger shows inline chips — the chip label is in a Tag element
+      const vipChips = screen.getAllByText(/^vip$/i)
+      expect(vipChips.length).toBeGreaterThan(0)
     })
   })
 })
