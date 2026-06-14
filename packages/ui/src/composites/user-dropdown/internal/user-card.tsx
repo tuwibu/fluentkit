@@ -52,7 +52,7 @@ export const UserCard = forwardRef<HTMLButtonElement, UserCardProps>(
         ) : (
           <div
             className={cn(
-              'rounded-full flex items-center justify-center font-bold text-white shrink-0 select-none',
+              'rounded-full flex items-center justify-center font-bold text-primary-foreground shrink-0 select-none',
               collapsed ? 'w-7 h-7 text-[10px]' : 'w-8 h-8 text-xs',
             )}
             style={{

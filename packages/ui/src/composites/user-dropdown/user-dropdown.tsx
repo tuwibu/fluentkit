@@ -28,6 +28,7 @@ interface PopoverPanelProps {
   user: UserDropdownProps['user']
   onLogout: () => void
   onOpenSettings?: () => void
+  settingsLabel: string
   colorThemeControl: boolean
   languageControl: boolean
   language?: string
@@ -42,6 +43,7 @@ function PopoverPanel({
   user,
   onLogout,
   onOpenSettings,
+  settingsLabel,
   colorThemeControl,
   languageControl,
   language,
@@ -148,7 +150,7 @@ function PopoverPanel({
           />
         ) : (
           <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0 text-body"
             style={{
               background:
                 'linear-gradient(135deg, color-mix(in srgb, var(--primary) 60%, transparent), var(--primary))',
@@ -159,9 +161,9 @@ function PopoverPanel({
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
+          <p className="text-body font-medium text-foreground truncate">{user.name}</p>
           {user.email && (
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            <p className="text-caption text-muted-foreground truncate">{user.email}</p>
           )}
         </div>
       </div>
@@ -173,14 +175,14 @@ function PopoverPanel({
         {onOpenSettings && (
           <button
             type="button"
-            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-[var(--win11-hover,hsl(var(--accent)))] transition-colors cursor-pointer"
+            className="w-full flex items-center gap-2 px-3 py-2 text-body text-foreground hover:bg-[var(--win11-hover,hsl(var(--accent)))] transition-colors cursor-pointer"
             onClick={() => {
               onOpenSettings()
               onClose()
             }}
           >
             <Settings className="w-4 h-4 flex-shrink-0" aria-hidden />
-            <span>Settings</span>
+            <span>{settingsLabel}</span>
           </button>
         )}
 
@@ -190,29 +192,33 @@ function PopoverPanel({
 
         {colorThemeControl && (
           <div className="flex items-center justify-between px-3 py-1.5">
-            <div className="flex items-center gap-2 text-sm text-foreground">
+            <div className="flex items-center gap-2 text-body text-foreground">
               <Paintbrush className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span>Theme</span>
             </div>
-            <Select
-              options={themeOptions.map((o) => ({ value: o.value, label: o.label }))}
-              value={currentTheme}
-              onChange={(v) => v && setTheme(String(v))}
-            />
+            <div className="w-[96px]">
+              <Select
+                options={themeOptions.map((o) => ({ value: o.value, label: o.label }))}
+                value={currentTheme}
+                onChange={(v) => v && setTheme(String(v))}
+              />
+            </div>
           </div>
         )}
 
         {languageControl && (
           <div className="flex items-center justify-between px-3 py-1.5">
-            <div className="flex items-center gap-2 text-sm text-foreground">
+            <div className="flex items-center gap-2 text-body text-foreground">
               <Languages className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span>Language</span>
             </div>
-            <Select
-              options={languageOptions}
-              value={language}
-              onChange={(v) => v && onLanguageChange?.(String(v))}
-            />
+            <div className="w-[96px]">
+              <Select
+                options={languageOptions}
+                value={language}
+                onChange={(v) => v && onLanguageChange?.(String(v))}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -223,7 +229,7 @@ function PopoverPanel({
       <div className="py-1">
         <button
           type="button"
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2 px-3 py-2 text-body text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
           onClick={() => {
             onLogout()
             onClose()
@@ -246,6 +252,7 @@ export function UserDropdown({
   user,
   onLogout,
   onOpenSettings,
+  settingsLabel = 'Account Settings',
   colorThemeControl = true,
   languageControl = false,
   collapsed = false,
@@ -271,6 +278,7 @@ export function UserDropdown({
         user={user}
         onLogout={onLogout}
         onOpenSettings={onOpenSettings}
+        settingsLabel={settingsLabel}
         colorThemeControl={colorThemeControl}
         languageControl={languageControl}
         language={language}

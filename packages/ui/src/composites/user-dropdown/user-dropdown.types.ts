@@ -8,6 +8,8 @@ export interface UserDropdownProps {
   user: UserDropdownUser
   onLogout: () => void
   onOpenSettings?: () => void
+  /** Label for the settings menu item. Default: 'Account Settings' */
+  settingsLabel?: string
   /** Show color theme selector. Default: true */
   colorThemeControl?: boolean
   /** Show language selector. Default: false */

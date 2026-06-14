@@ -16,6 +16,7 @@ export type { PlaceholderProps } from './placeholder'
 // Lib utils
 export { cn } from './lib/cn'
 export { cx } from './lib/cx'
+export { getTagColor } from './lib/tag-color'
 
 // Primitives — non-interactive
 export { Label } from './primitives/label'
@@ -157,3 +158,24 @@ export type {
 } from './composites/drawer-section/drawer-section.types'
 export { DrawerSection } from './composites/drawer-section/drawer-section'
 export { DrawerInfoRow } from './composites/drawer-section/drawer-info-row'
+
+export type { IconButtonProps } from './composites/icon-button/icon-button.types'
+export { IconButton } from './composites/icon-button/icon-button'
+
+export type { PaginationProps } from './composites/pagination/pagination.types'
+export { Pagination } from './composites/pagination/pagination'
+
+export type { AvatarProps, AvatarSize } from './composites/avatar/avatar.types'
+export { Avatar } from './composites/avatar/avatar'
+
+export type { FilterSelectProps } from './composites/filter-select/filter-select.types'
+export { FilterSelect } from './composites/filter-select/filter-select'
+
+export type {
+  StatCardProps,
+  StatCardTone,
+  StatCardVariant,
+  StatCardDelta,
+  StatCardSkeletonProps,
+} from './composites/stat-card/stat-card.types'
+export { StatCard, StatCardSkeleton } from './composites/stat-card/stat-card'

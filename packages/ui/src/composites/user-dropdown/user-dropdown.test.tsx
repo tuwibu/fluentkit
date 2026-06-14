@@ -98,8 +98,31 @@ describe('UserDropdown', () => {
     const onOpenSettings = vi.fn()
     renderDropdown({ onOpenSettings })
     await openPopover()
-    await act(async () => { fireEvent.click(screen.getByText('Settings')) })
+    // Default settingsLabel is 'Account Settings'
+    await act(async () => { fireEvent.click(screen.getByText('Account Settings')) })
     expect(onOpenSettings).toHaveBeenCalledOnce()
+  })
+
+  it('shows custom settingsLabel when provided', async () => {
+    renderDropdown({ onOpenSettings: vi.fn(), settingsLabel: 'My Settings' })
+    await openPopover()
+    expect(screen.getByText('My Settings')).toBeInTheDocument()
+  })
+
+  it('shows name and email in popover hero block', async () => {
+    renderDropdown()
+    await openPopover()
+    // name and email appear in both trigger and popover; at least one instance each
+    expect(screen.getAllByText('Alice Johnson').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('alice@example.com').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('renders avatar img when avatar url provided (trigger)', () => {
+    const avatarUser = { name: 'Alice Johnson', email: 'alice@example.com', avatar: 'https://example.com/avatar.png' }
+    renderDropdown({ user: avatarUser })
+    // Avatar appears in trigger (UserCard) even before popover opens
+    const imgs = document.querySelectorAll('img')
+    expect(Array.from(imgs).some((img) => img.src.includes('avatar.png'))).toBe(true)
   })
 
   it('closes on Escape key', async () => {
