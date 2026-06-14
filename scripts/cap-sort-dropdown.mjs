@@ -1,0 +1,12 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch({ headless: true })
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+const page = await ctx.newPage()
+await page.goto('http://localhost:5173/profiles', { waitUntil: 'networkidle' })
+await page.waitForTimeout(800)
+await page.evaluate(() => { const t=[...document.querySelectorAll('[data-slot="select-trigger"]')].find(x=>x.textContent.includes('Sort by')); t&&t.click() })
+await page.waitForTimeout(400)
+const box = await page.evaluate(() => { const c=document.querySelector('[data-slot="select-content"]'); const r=c.getBoundingClientRect(); return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)} })
+await page.screenshot({ path: 'plans/reports/sort-dropdown.png', clip: { x: box.x, y: box.y, width: box.w, height: Math.min(box.h, 260) } })
+await browser.close()
+console.log('done')

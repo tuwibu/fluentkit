@@ -1,0 +1,25 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch({ headless: true })
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } })
+const page = await ctx.newPage()
+await page.goto('http://localhost:5173/profiles', { waitUntil: 'networkidle' })
+await page.waitForTimeout(900)
+const nameTh = page.locator('th:has-text("Name")').first()
+const before = await nameTh.evaluate(el => Math.round(el.getBoundingClientRect().width))
+// drag handle far left (try to shrink to ~0)
+const h = nameTh.locator('[data-slot="column-resize-handle"]')
+const box = await h.boundingBox()
+await page.mouse.move(box.x+3, box.y+box.height/2)
+await page.mouse.down()
+await page.mouse.move(box.x-400, box.y+box.height/2, { steps: 10 })
+await page.mouse.up()
+await page.waitForTimeout(300)
+const after = await nameTh.evaluate(el => Math.round(el.getBoundingClientRect().width))
+// check no horizontal overflow / content not clipped: measure a name cell text scrollWidth vs clientWidth
+const clip = await page.evaluate(() => {
+  const cell = document.querySelector('tbody tr td:nth-child(3)') // name col (after checkbox+group? adjust)
+  return cell ? { sw: cell.scrollWidth, cw: cell.clientWidth } : null
+})
+await page.screenshot({ path: 'plans/reports/resize-min.png', clip: { x: 220, y: 95, width: 700, height: 160 } })
+await browser.close()
+console.log(JSON.stringify({ before, afterShrinkAttempt: after, clip }))
