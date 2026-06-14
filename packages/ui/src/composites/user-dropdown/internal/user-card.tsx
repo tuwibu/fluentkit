@@ -31,7 +31,7 @@ export const UserCard = forwardRef<HTMLButtonElement, UserCardProps>(
         aria-label={collapsed ? user.name : undefined}
         data-slot="user-card-trigger"
         className={cn(
-          'flex items-center gap-3 px-3 py-2 bg-transparent cursor-pointer w-full text-left text-foreground font-[inherit] rounded-[4px] transition-colors duration-100 min-h-[44px]',
+          'flex items-center gap-3 px-3 py-2 mx-2 mt-1 w-[calc(100%-1rem)] bg-transparent cursor-pointer text-left text-foreground font-[inherit] rounded-[4px] transition-colors duration-100 min-h-[44px]',
           collapsed && 'justify-center px-[6px] gap-0',
           open
             ? 'bg-[var(--win11-hover,hsl(var(--accent)))]'

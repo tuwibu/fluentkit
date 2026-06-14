@@ -59,7 +59,7 @@ export function Pagination({
       </span>
 
       {/* Center: page navigation */}
-      <nav role="navigation" aria-label="Pagination" className="flex items-center gap-0.5">
+      <nav role="navigation" aria-label="Pagination" className="flex items-center gap-1">
         <button
           type="button"
           aria-label="Previous page"

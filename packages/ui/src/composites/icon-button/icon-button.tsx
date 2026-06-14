@@ -43,7 +43,7 @@ function IconButton({
       disabled={isDisabled}
       onClick={onClick}
       className={cn(
-        'inline-flex items-center justify-center rounded-[4px] cursor-pointer',
+        'inline-flex shrink-0 items-center justify-center rounded-[4px] cursor-pointer',
         'transition-[background,color] duration-[120ms]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
         'disabled:opacity-50 disabled:cursor-not-allowed',
