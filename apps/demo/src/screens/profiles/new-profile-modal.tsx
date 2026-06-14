@@ -90,6 +90,7 @@ export function NewProfileModal({ open, onOpenChange }: NewProfileModalProps) {
               value={form.platform}
               onChange={(v) => set('platform')(v as string)}
               placeholder="Select platform"
+              block
             />
           </FormField>
 
@@ -108,6 +109,7 @@ export function NewProfileModal({ open, onOpenChange }: NewProfileModalProps) {
                 value={form.group}
                 onChange={(v) => set('group')(v as string)}
                 placeholder="Select group"
+                block
               />
             </FormField>
           </div>
@@ -120,6 +122,7 @@ export function NewProfileModal({ open, onOpenChange }: NewProfileModalProps) {
                 value={form.browserType}
                 onChange={(v) => set('browserType')(v as string)}
                 placeholder="Select browser"
+                block
               />
             </FormField>
             <FormField label="Version">
@@ -128,6 +131,7 @@ export function NewProfileModal({ open, onOpenChange }: NewProfileModalProps) {
                 value={form.version}
                 onChange={(v) => set('version')(v as string)}
                 placeholder="Select version"
+                block
               />
             </FormField>
           </div>
@@ -139,6 +143,7 @@ export function NewProfileModal({ open, onOpenChange }: NewProfileModalProps) {
               value={form.country}
               onChange={(v) => set('country')(v as string)}
               placeholder="Select country"
+              block
             />
           </FormField>
 

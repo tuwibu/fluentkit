@@ -25,7 +25,9 @@ export function ProfilesToolbar({
 }: ProfilesToolbarProps) {
   const deletedId = useId()
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center justify-between gap-2 flex-wrap">
+      {/* Left group: icon actions + search + filters + Deleted toggle */}
+      <div className="flex items-center gap-2 flex-wrap">
       {/* Left: icon actions */}
       <div className="flex items-center gap-1">
         <IconButton
@@ -104,7 +106,7 @@ export function ProfilesToolbar({
       />
 
       {/* 5. Sort — Select single + search (loại 2) */}
-      <div className="w-40">
+      <div className="w-fit">
         <Select
           options={SORT_OPTIONS}
           value={filters.sort || undefined}
@@ -115,10 +117,10 @@ export function ProfilesToolbar({
         />
       </div>
 
-      {/* Spacer */}
-      <div className="flex-1" />
+      {/* Separator */}
+      <div className="w-px h-6 self-center bg-[var(--win11-card-border)] shrink-0" aria-hidden />
 
-      {/* Deleted / trash toggle */}
+      {/* Deleted / trash toggle — sits at the end of the left filter group */}
       <div className="flex items-center gap-2 shrink-0">
         <Switch
           id={deletedId}
@@ -130,7 +132,10 @@ export function ProfilesToolbar({
         </Label>
       </div>
 
-      <Button variant="default" size="sm" onClick={onNewProfile}>
+      </div>
+
+      {/* Right group: primary action (justify-between keeps it on the right) */}
+      <Button variant="default" size="sm" onClick={onNewProfile} className="shrink-0">
         <Plus size={14} className="mr-1" />
         New profile
       </Button>

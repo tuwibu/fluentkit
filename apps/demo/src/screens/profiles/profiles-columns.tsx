@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@fluent-kit/ui'
-import { Tag, IconButton, Avatar } from '@fluent-kit/ui'
+import { Tag, IconButton, Avatar, getTagColor } from '@fluent-kit/ui'
 import { Play, Pencil, Trash2, Globe } from 'lucide-react'
 import { StatusPill } from '@/components/status-pill'
 import type { ProfileRecord } from '@/mocks/fixtures/profiles.fixtures'
@@ -41,7 +41,9 @@ export function createProfilesColumns(
     width: 120,
     sorter: true,
     render: (_value: string, record: ProfileRecord) => (
-      <Tag color={GROUP_TONE_COLOR[record.groupTone]}>{record.group}</Tag>
+      <Tag color={GROUP_TONE_COLOR[record.groupTone]} bullet>
+        {record.group}
+      </Tag>
     ),
   },
   {
@@ -50,6 +52,7 @@ export function createProfilesColumns(
     dataIndex: 'name',
     width: 200,
     sorter: true,
+    resize: true,
     render: (_value: string, record: ProfileRecord) => (
       <div className="flex items-center gap-2 min-w-0">
         <Avatar name={record.name} size="sm" />
@@ -78,7 +81,7 @@ export function createProfilesColumns(
     key: 'status',
     title: 'Status',
     dataIndex: 'status',
-    width: 120,
+    width: 130,
     render: (_value: string, record: ProfileRecord) => (
       <StatusPill status={STATUS_LABEL[record.status]} />
     ),
@@ -88,6 +91,7 @@ export function createProfilesColumns(
     title: 'Proxy',
     dataIndex: 'proxyType',
     width: 220,
+    resize: true,
     render: (_value: string, record: ProfileRecord) => {
       if (record.proxyType === 'inline' && record.proxy) {
         return (
@@ -113,6 +117,7 @@ export function createProfilesColumns(
     title: 'Tags',
     dataIndex: 'tags',
     width: 100,
+    resize: true,
     render: (_value: string[], record: ProfileRecord) => {
       if (!record.tags || record.tags.length === 0) {
         return <span className="text-muted-foreground opacity-50">—</span>
@@ -120,7 +125,7 @@ export function createProfilesColumns(
       return (
         <div className="flex flex-wrap gap-1">
           {record.tags.map((t) => (
-            <Tag key={t} variant="neutral">
+            <Tag key={t} color={getTagColor(t)}>
               {t}
             </Tag>
           ))}
@@ -141,11 +146,12 @@ export function createProfilesColumns(
   },
   {
     key: 'actions',
-    title: '',
+    title: 'Action',
     width: 100,
-    align: 'right',
+    align: 'center',
+    fixed: 'right',
     render: (_value: unknown, record: ProfileRecord) => (
-      <div className="flex items-center gap-1.5 justify-end">
+      <div className="flex items-center gap-1.5 justify-center">
         <IconButton
           size="sm"
           icon={<Play size={13} className="fill-current" />}
