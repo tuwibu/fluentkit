@@ -147,7 +147,7 @@ export function createProfilesColumns(
   {
     key: 'actions',
     title: 'Action',
-    width: 100,
+    width: 124,
     align: 'center',
     fixed: 'right',
     render: (_value: unknown, record: ProfileRecord) => (
